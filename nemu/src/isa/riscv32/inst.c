@@ -17,7 +17,7 @@
 #include <cpu/cpu.h>
 #include <cpu/ifetch.h>
 #include <cpu/decode.h>
-// #include"/home/wuxy/ysyx-workbench/nemu/src/utils/elf.h"
+#include"/home/wuxy/ysyx-workbench/nemu/src/utils/elf.h"
 
 #define R(i) gpr(i)   //i是寄存器的序号
 #define Mr vaddr_read
@@ -86,7 +86,6 @@ static int decode_exec(Decode *s) {
   INSTPAT("??????? ????? ????? ??? ????? 11011 11", jal    , J, R(rd) = s->pc + 4; s->dnpc = s->pc + imm; IFDEF(CONFIG_FTRACE, if(rd == 1 ){display_call(s->pc,s->dnpc);}));  //立即数跳转
   INSTPAT("??????? ????? ????? 000 ????? 11001 11", jalr   , I, R(rd) = s->pc + 4;s->dnpc = (src1 + imm) & ~1; IFDEF(CONFIG_FTRACE, if(rd == 0 && src1 == R(1)){display_ret(s->pc,s->dnpc);
                                                                                                               }else if(rd == 1){display_call(s->pc,s->dnpc);}));  //寄存器跳转 “& ~1”用来将最低位清零
-
   INSTPAT("??????? ????? ????? 000 ????? 11000 11", beq    , B, if(src1 == src2) s->dnpc = s->pc + imm); //相等则跳转
   INSTPAT("??????? ????? ????? 001 ????? 11000 11", bne    , B, if(src1 != src2) s->dnpc = s->pc + imm); //不等则跳转
   INSTPAT("??????? ????? ????? 100 ????? 11000 11", blt    , B, if((sword_t)src1 < (sword_t)src2) s->dnpc = s->pc + imm); //补码小则立即数跳转

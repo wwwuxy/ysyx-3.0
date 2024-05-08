@@ -182,7 +182,18 @@ config WATCHPOINT
   bool "open_watchpoint"
   default n
 
+config IRINGBUF
+  bool "open_iringbuf"
+  default n
+  
+config MTRACE
+  bool "open_memtrace"
+  default n
 
+config FTRACE
+  bool "open_ftrace"
+  default n
+  
 config DIFFTEST_REF_PATH
   string
   default "tools/qemu-diff" if DIFFTEST_REF_QEMU

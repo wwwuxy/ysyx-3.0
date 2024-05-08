@@ -24,16 +24,45 @@ static uint8_t *pmem = NULL;
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 #endif
 
+
+
+
+#ifdef CONFIG_MTRACE
+#define MaxSize 15  //定义ins_buffer的大小
+
+typedef struct  {   //环形队列结构体
+  uint32_t val[MaxSize];
+  int front,rear;
+}SqQuene;
+
+SqQuene mem_trace;  //指令环形缓冲区
+
+static void enQuene(SqQuene *q, uint32_t val){  //入队，满了就会覆盖旧值
+  q->rear = (q->rear + 1) % MaxSize;
+  q->val[q->rear] = val;
+  printf("当前访问的内存地址是:0x%08x\n",val);
+
+}
+#endif
+
+
+
 uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
 paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
 static word_t pmem_read(paddr_t addr, int len) {
   word_t ret = host_read(guest_to_host(addr), len);
+
+  IFDEF(CONFIG_MTRACE,(enQuene(&mem_trace, addr)));
+
   return ret;
 }
 
 static void pmem_write(paddr_t addr, int len, word_t data) {
   host_write(guest_to_host(addr), len, data);
+
+  IFDEF(CONFIG_MTRACE,enQuene(&mem_trace, addr));
+
 }
 
 static void out_of_bound(paddr_t addr) {
