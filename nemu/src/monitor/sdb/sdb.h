@@ -17,6 +17,7 @@
 #define __SDB_H__
 
 #include <common.h>
+#include "/home/wuxy/ysyx-workbench/nemu/include/memory/vaddr.h"
 
 word_t expr(char *e, bool *success);
 
