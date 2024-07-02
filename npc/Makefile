@@ -1,31 +1,25 @@
-BUILD_DIR = ./build
+TOPNAME = top
+# INC_PATH ?=
 
-PRJ = playground
+# # rules for verilator
+# INCFLAGS = $(addprefix -I, $(INC_PATH))
+# CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
 
-test:
-	mill -i $(PRJ).test
+# project source
+VSRCS = $(shell find $(abspath ./vsrc) -name "*.v")
+CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cc" -or -name "*.cpp")
 
-verilog:
-	$(call git_commit, "generate verilog")
-	mkdir -p $(BUILD_DIR)
-	mill -i $(PRJ).runMain Elaborate --target-dir $(BUILD_DIR)
-
-help:
-	mill -i $(PRJ).runMain Elaborate --help
-
-reformat:
-	mill -i __.reformat
-
-checkformat:
-	mill -i __.checkFormat
-
-clean:
-	-rm -rf $(BUILD_DIR)
-
-.PHONY: test verilog help reformat checkformat clean
+all:
+	sim	clean run
+	@echo "Write this Makefile by your self."
 
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	@echo "Write this Makefile by yourself."
+	verilator --cc --exe --build --threads-dpi all\
+	 -j 16 -Wall --trace --top-module $(TOPNAME)\
+	 $(CSRCS) $(VSRCS)
 
--include ../Makefile
+clean:
+	rm -rf obj_dir *.vcd
+
+include ../Makefile
