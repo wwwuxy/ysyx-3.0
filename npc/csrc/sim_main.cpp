@@ -14,6 +14,8 @@ bool nemutrap = false;
 //表示内存空间
 const u_int32_t instmem[1024] = {
 0x00160413,                 //addi	s0,a2,1
+0x00010297,                 //auipc rd = 2
+0x000011B7,                 //lui	rd = 3
 0x00100072,                 //ebreak
 0x00100072,                 //ebreak
 0x00100072                 //ebreak
@@ -28,7 +30,7 @@ uint32_t  pmem_read(uint32_t pc){
   if(pc != 0){
     printf("pc = %x\n", pc);
     printf("base = %x\n", base);
-    // assert(pc >= base);
+    assert(pc >= base);
     inst = instmem[pc - base];
     printf("inst = %08x\n", inst);
     base += 3;  //每次读取一个指令，地址加4

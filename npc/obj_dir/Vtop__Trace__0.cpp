@@ -25,7 +25,7 @@ void Vtop___024root__trace_chg_sub_0(Vtop___024root* vlSelf, VerilatedVcd::Buffe
     // Body
     if (VL_UNLIKELY(vlSelf->__Vm_traceActivity[1U])) {
         bufp->chgIData(oldp+0,(vlSelf->top__DOT___InputAlu_io_op2),32);
-        bufp->chgSData(oldp+1,(vlSelf->top__DOT__Controller__DOT__io_alu_a_sel_0),12);
+        bufp->chgBit(oldp+1,(vlSelf->top__DOT__Controller__DOT__io_rf_wr_en_0));
         bufp->chgBit(oldp+2,(vlSelf->top__DOT__Controller__DOT__io_alu_a_sel_0));
     }
     if (VL_UNLIKELY(vlSelf->__Vm_traceActivity[2U])) {
@@ -71,17 +71,20 @@ void Vtop___024root__trace_chg_sub_0(Vtop___024root* vlSelf, VerilatedVcd::Buffe
     bufp->chgIData(oldp+41,(vlSelf->io_data),32);
     bufp->chgBit(oldp+42,(vlSelf->io_mem_wr));
     bufp->chgIData(oldp+43,(vlSelf->top__DOT___InputAlu_io_op1),32);
-    bufp->chgQData(oldp+44,((0x7fffffffffffffffULL 
+    bufp->chgSData(oldp+44,(((IData)(vlSelf->top__DOT__Controller__DOT___GEN)
+                              ? 1U : ((0x37U == (0x7fU 
+                                                 & vlSelf->io_inst)) 
+                                      << 6U))),12);
+    bufp->chgQData(oldp+45,((0x7fffffffffffffffULL 
                              & ((QData)((IData)(vlSelf->top__DOT___InputAlu_io_op1)) 
-                                << ((0x13U == (0x7fU 
-                                               & vlSelf->io_inst))
-                                     ? (0x1fU & (vlSelf->io_inst 
-                                                 >> 0x14U))
-                                     : 0U)))),63);
-    bufp->chgBit(oldp+46,((0x13U == (0x7fU & vlSelf->io_inst))));
-    bufp->chgIData(oldp+47,(vlSelf->top__DOT__RegisterFile__DOT___GEN[
+                                << (0x1fU & vlSelf->top__DOT___InputAlu_io_op2)))),63);
+    bufp->chgBit(oldp+47,((0x13U == (0x7fU & vlSelf->io_inst))));
+    bufp->chgBit(oldp+48,((0x17U == (0x7fU & vlSelf->io_inst))));
+    bufp->chgBit(oldp+49,((0x37U == (0x7fU & vlSelf->io_inst))));
+    bufp->chgIData(oldp+50,(vlSelf->top__DOT__RegisterFile__DOT___GEN[
                             (0x1fU & (vlSelf->io_inst 
                                       >> 0xfU))]),32);
+    bufp->chgIData(oldp+51,(vlSelf->top__DOT___InputReg_io_wd),32);
 }
 
 void Vtop___024root__trace_cleanup(void* voidSelf, VerilatedVcd* /*unused*/) {

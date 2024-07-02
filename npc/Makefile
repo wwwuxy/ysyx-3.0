@@ -18,6 +18,10 @@ sim:
 	verilator --cc --exe --build --threads-dpi all\
 	 -j 16 -Wall --trace --top-module $(TOPNAME)\
 	 $(CSRCS) $(VSRCS)
+	 ./obj_dir/V$(TOPNAME)
+
+wave:
+	gtkwave *.vcd
 
 clean:
 	rm -rf obj_dir *.vcd
