@@ -6,8 +6,8 @@ TOPNAME = top
 # CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
 
 # project source
-VSRCS = $(shell find $(abspath ./vsrc) -name "*.v")
-CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cc" -or -name "*.cpp")
+VSRCS += $(shell find $(abspath ./vsrc) -name "*.v")
+CSRCS += $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cc" -or -name "*.cpp")
 
 all:
 	sim	clean run
@@ -19,6 +19,7 @@ sim:
 	 -j 16 -Wall --trace --top-module $(TOPNAME)\
 	 $(CSRCS) $(VSRCS)
 	 ./obj_dir/V$(TOPNAME)
+	 --img ?= ../am-kernels/tests/cpu-tests/build/dummy-riscv64-npc.bin
 
 wave:
 	gtkwave *.vcd

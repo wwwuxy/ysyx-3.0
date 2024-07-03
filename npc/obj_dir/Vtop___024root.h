@@ -16,9 +16,11 @@ class Vtop___024root final : public VerilatedModule {
     VL_IN8(clock,0,0);
     VL_IN8(reset,0,0);
     VL_OUT8(io_mem_wr,0,0);
-    CData/*0:0*/ top__DOT__Controller__DOT__io_alu_a_sel_0;
+    CData/*0:0*/ top__DOT___Controller_io_rf_wr_en;
+    CData/*0:0*/ top__DOT___Controller_io_alu_a_sel;
+    CData/*0:0*/ top__DOT___Controller_io_jump_en;
     CData/*0:0*/ top__DOT__Controller__DOT___GEN;
-    CData/*0:0*/ top__DOT__Controller__DOT__io_rf_wr_en_0;
+    CData/*0:0*/ top__DOT__Controller__DOT___GEN_0;
     CData/*0:0*/ __Vtrigrprev__TOP__clock;
     CData/*0:0*/ __VactContinue;
     VL_IN(io_inst,31,0);
