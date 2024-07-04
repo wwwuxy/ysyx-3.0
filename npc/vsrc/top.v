@@ -62,7 +62,7 @@ module pc(
     else if (io_jump_en)	
       pc <= io_jump_pc;	
     else	
-      pc <= pc + 32'h1;	
+      pc <= pc + 32'h4;	
   end 
   `ifdef ENABLE_INITIAL_REG_	
     `ifdef FIRRTL_BEFORE_INITIAL	
@@ -82,7 +82,7 @@ module pc(
       `FIRRTL_AFTER_INITIAL	
     `endif 
   `endif 
-  assign io_dnpc = io_jump_en ? pc + 32'h1 : pc;	
+  assign io_dnpc = io_jump_en ? pc + 32'h4 : pc;	
   assign io_next_pc = pc;	
 endmodule
 
@@ -498,7 +498,7 @@ module controller(
   assign io_jump_en = is_jalr | is_jal;	
   assign io_imm =
     is_jal
-      ? {1'h0, {12{io_inst[31]}}, io_inst[19:12], io_inst[20], io_inst[30:21]}
+      ? {{12{io_inst[31]}}, io_inst[19:12], io_inst[20], io_inst[30:21], 1'h0}
       : is_lui
           ? {io_inst[31:12], 12'h0}
           : is_auipc
@@ -539,7 +539,8 @@ module top(
   output [31:0] io_pc,	
                 io_addr,	
                 io_data,	
-  output        io_mem_wr	
+  output        io_mem_wr,	
+  output [31:0] io_imm	
 );
 
   wire [31:0] _InputReg_io_wd;	
@@ -605,5 +606,6 @@ module top(
   assign io_pc = _Pc_io_next_pc;	
   assign io_addr = _Alu_io_rsl;	
   assign io_mem_wr = 1'h0;	
+  assign io_imm = _Controller_io_imm;	
 endmodule
 

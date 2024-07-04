@@ -99,47 +99,27 @@ VL_ATTR_COLD void Vtop___024root___stl_sequent__TOP__0(Vtop___024root* vlSelf) {
                                                    == 
                                                    (0x7fU 
                                                     & vlSelf->io_inst)));
-    vlSelf->top__DOT___InputAlu_io_op2 = ((0x6fU == 
-                                           (0x7fU & vlSelf->io_inst))
-                                           ? ((0x7ff80000U 
-                                               & ((- (IData)(
-                                                             (vlSelf->io_inst 
-                                                              >> 0x1fU))) 
-                                                  << 0x13U)) 
-                                              | ((0x7f800U 
-                                                  & (vlSelf->io_inst 
-                                                     >> 1U)) 
-                                                 | ((0x400U 
-                                                     & (vlSelf->io_inst 
-                                                        >> 0xaU)) 
-                                                    | (0x3ffU 
-                                                       & (vlSelf->io_inst 
-                                                          >> 0x15U)))))
-                                           : ((0x37U 
-                                               == (0x7fU 
-                                                   & vlSelf->io_inst))
-                                               ? (0xfffff000U 
-                                                  & vlSelf->io_inst)
-                                               : ((0x17U 
-                                                   == 
-                                                   (0x7fU 
-                                                    & vlSelf->io_inst))
-                                                   ? 
-                                                  (0xfffff000U 
-                                                   & vlSelf->io_inst)
-                                                   : 
-                                                  ((0x13U 
-                                                    == 
-                                                    (0x7fU 
-                                                     & vlSelf->io_inst))
-                                                    ? 
-                                                   (((- (IData)(
-                                                                (vlSelf->io_inst 
-                                                                 >> 0x1fU))) 
-                                                     << 0xcU) 
-                                                    | (vlSelf->io_inst 
-                                                       >> 0x14U))
-                                                    : 0U))));
+    vlSelf->io_imm = ((0x6fU == (0x7fU & vlSelf->io_inst))
+                       ? (((- (IData)((vlSelf->io_inst 
+                                       >> 0x1fU))) 
+                           << 0x14U) | ((0xff000U & vlSelf->io_inst) 
+                                        | ((0x800U 
+                                            & (vlSelf->io_inst 
+                                               >> 9U)) 
+                                           | (0x7feU 
+                                              & (vlSelf->io_inst 
+                                                 >> 0x14U)))))
+                       : ((0x37U == (0x7fU & vlSelf->io_inst))
+                           ? (0xfffff000U & vlSelf->io_inst)
+                           : ((0x17U == (0x7fU & vlSelf->io_inst))
+                               ? (0xfffff000U & vlSelf->io_inst)
+                               : ((0x13U == (0x7fU 
+                                             & vlSelf->io_inst))
+                                   ? (((- (IData)((vlSelf->io_inst 
+                                                   >> 0x1fU))) 
+                                       << 0xcU) | (vlSelf->io_inst 
+                                                   >> 0x14U))
+                                   : 0U))));
     vlSelf->top__DOT__Controller__DOT___GEN = ((0x6fU 
                                                 == 
                                                 (0x7fU 
@@ -233,23 +213,17 @@ VL_ATTR_COLD void Vtop___024root___stl_sequent__TOP__0(Vtop___024root* vlSelf) {
                          | ((0x67U != (0x7fU & vlSelf->io_inst)) 
                             & (IData)(vlSelf->top__DOT__Controller__DOT___GEN)))
                          ? (vlSelf->top__DOT___InputAlu_io_op1 
-                            + vlSelf->top__DOT___InputAlu_io_op2)
-                         : 0U) | ((((~ (IData)(vlSelf->top__DOT__Controller__DOT___GEN_0)) 
-                                    & ((0x67U != (0x7fU 
-                                                  & vlSelf->io_inst)) 
-                                       & ((~ (IData)(vlSelf->top__DOT__Controller__DOT___GEN)) 
-                                          & (0x37U 
-                                             == (0x7fU 
-                                                 & vlSelf->io_inst)))))
-                                    ? vlSelf->top__DOT___InputAlu_io_op2
-                                    : 0U) | (((~ (IData)(vlSelf->top__DOT__Controller__DOT___GEN_0)) 
-                                              & (0x67U 
-                                                 == 
-                                                 (0x7fU 
-                                                  & vlSelf->io_inst)))
-                                              ? (vlSelf->top__DOT___InputAlu_io_op1 
-                                                 | vlSelf->top__DOT___InputAlu_io_op2)
-                                              : 0U)));
+                            + vlSelf->io_imm) : 0U) 
+                       | ((((~ (IData)(vlSelf->top__DOT__Controller__DOT___GEN_0)) 
+                            & ((0x67U != (0x7fU & vlSelf->io_inst)) 
+                               & ((~ (IData)(vlSelf->top__DOT__Controller__DOT___GEN)) 
+                                  & (0x37U == (0x7fU 
+                                               & vlSelf->io_inst)))))
+                            ? vlSelf->io_imm : 0U) 
+                          | (((~ (IData)(vlSelf->top__DOT__Controller__DOT___GEN_0)) 
+                              & (0x67U == (0x7fU & vlSelf->io_inst)))
+                              ? (vlSelf->top__DOT___InputAlu_io_op1 
+                                 | vlSelf->io_imm) : 0U)));
     vlSelf->top__DOT___InputReg_io_wd = ((((IData)(vlSelf->top__DOT__Controller__DOT___GEN_0) 
                                            | ((~ (IData)(vlSelf->top__DOT___Controller_io_jump_en)) 
                                               & (0x17U 
@@ -268,8 +242,10 @@ VL_ATTR_COLD void Vtop___024root___stl_sequent__TOP__0(Vtop___024root* vlSelf) {
                                                     == 
                                                     (0x7fU 
                                                      & vlSelf->io_inst)))))
-                                           ? (vlSelf->top__DOT__Pc__DOT__pc 
-                                              + (IData)(vlSelf->top__DOT___Controller_io_jump_en))
+                                           ? ((IData)(vlSelf->top__DOT___Controller_io_jump_en)
+                                               ? ((IData)(4U) 
+                                                  + vlSelf->top__DOT__Pc__DOT__pc)
+                                               : vlSelf->top__DOT__Pc__DOT__pc)
                                            : 0U));
 }
 
@@ -343,9 +319,9 @@ VL_ATTR_COLD void Vtop___024root___ctor_var_reset(Vtop___024root* vlSelf) {
     vlSelf->io_addr = VL_RAND_RESET_I(32);
     vlSelf->io_data = VL_RAND_RESET_I(32);
     vlSelf->io_mem_wr = VL_RAND_RESET_I(1);
+    vlSelf->io_imm = VL_RAND_RESET_I(32);
     vlSelf->top__DOT___InputReg_io_wd = VL_RAND_RESET_I(32);
     vlSelf->top__DOT___InputAlu_io_op1 = VL_RAND_RESET_I(32);
-    vlSelf->top__DOT___InputAlu_io_op2 = VL_RAND_RESET_I(32);
     vlSelf->top__DOT___Controller_io_rf_wr_en = VL_RAND_RESET_I(1);
     vlSelf->top__DOT___Controller_io_alu_a_sel = VL_RAND_RESET_I(1);
     vlSelf->top__DOT___Controller_io_jump_en = VL_RAND_RESET_I(1);

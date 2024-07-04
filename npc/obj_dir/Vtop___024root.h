@@ -27,9 +27,9 @@ class Vtop___024root final : public VerilatedModule {
     VL_OUT(io_pc,31,0);
     VL_OUT(io_addr,31,0);
     VL_OUT(io_data,31,0);
+    VL_OUT(io_imm,31,0);
     IData/*31:0*/ top__DOT___InputReg_io_wd;
     IData/*31:0*/ top__DOT___InputAlu_io_op1;
-    IData/*31:0*/ top__DOT___InputAlu_io_op2;
     IData/*31:0*/ top__DOT__Pc__DOT__pc;
     IData/*31:0*/ top__DOT__RegisterFile__DOT__FileReg_0;
     IData/*31:0*/ top__DOT__RegisterFile__DOT__FileReg_1;
