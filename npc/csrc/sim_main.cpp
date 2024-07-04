@@ -97,12 +97,18 @@ int main(int argc, char** argv, char** env) {
       // top->io_inst = pmem_read(top->io_pc);
       // printf("即将要取的pc = %x\n", top->io_pc);
       top->io_inst = mem_read(top->io_pc, 4);
-      printf("pc = %x, inst = %08x\n", top->io_pc, top->io_inst);
+      // printf("pc = %x, inst = %08x\n", top->io_pc, top->io_inst);
       // top->eval();
       // printf("imm= %x\n",top->io_imm);
       // top->eval();
-      if(top->io_inst == 0x00100073)  //ebreak
+      if(top->io_inst == 0x00100073){  //ebreak
         nemutrap = true;
+        if(top->io_a0 == 0){
+          printf("\033[;36mHIT GOOD TRAP!\033[0m\n"); //修改字体颜色
+        }else{
+          printf("HIT BAD TRAP!\n");
+        }
+      }
     }
       // printf(rst ? "reset\n" : "run\n");  //打印当前状态
       // printf("top->reset = %d\n",top->reset);  //打印当前状态

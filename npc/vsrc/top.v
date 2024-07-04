@@ -115,7 +115,8 @@ module registerfile(
   input         io_wr_en,	
   input  [31:0] io_wd,	
   output [31:0] io_rd1,	
-                io_rd2	
+                io_rd2,	
+                io_a0	
 );
 
   reg  [31:0]       FileReg_0;	
@@ -470,6 +471,7 @@ module registerfile(
   `endif 
   assign io_rd1 = _GEN[io_inst[19:15]];	
   assign io_rd2 = _GEN[io_inst[24:20]];	
+  assign io_a0 = FileReg_10;	
 endmodule
 
 module controller(	
@@ -540,7 +542,7 @@ module top(
                 io_addr,	
                 io_data,	
   output        io_mem_wr,	
-  output [31:0] io_imm	
+  output [31:0] io_a0	
 );
 
   wire [31:0] _InputReg_io_wd;	
@@ -577,7 +579,8 @@ module top(
     .io_wr_en (_Controller_io_rf_wr_en),	
     .io_wd    (_InputReg_io_wd),	
     .io_rd1   (_RegisterFile_io_rd1),
-    .io_rd2   (io_data)
+    .io_rd2   (io_data),
+    .io_a0    (io_a0)
   );
   controller Controller (	
     .io_inst      (io_inst),
@@ -606,6 +609,5 @@ module top(
   assign io_pc = _Pc_io_next_pc;	
   assign io_addr = _Alu_io_rsl;	
   assign io_mem_wr = 1'h0;	
-  assign io_imm = _Controller_io_imm;	
 endmodule
 

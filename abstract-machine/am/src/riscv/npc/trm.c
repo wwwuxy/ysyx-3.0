@@ -18,7 +18,7 @@ void putch(char ch) {
 }
 
 void halt(int code) {
-  asm volatile("mv a0, %0; ebreak" : :"r"(code));
+  asm volatile("mv a0, %0; ebreak" : :"r"(code)); //a0的值为0，则正常退出
   while (1);
 }
 
