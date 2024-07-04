@@ -75,7 +75,7 @@ int main(int argc, char** argv, char** env) {
  
  //初始化npc
   init_npc(argc, argv);
-  printf("init_npc done\n");
+  // printf("init_npc done\n");
   // step_and_dump_wave(top, tfp, contextp);
 
    while (contextp->time() < SIM_TIME && !contextp->gotFinish()) { 
