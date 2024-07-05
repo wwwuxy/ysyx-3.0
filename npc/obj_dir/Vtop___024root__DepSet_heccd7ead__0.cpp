@@ -111,6 +111,7 @@ VL_INLINE_OPT void Vtop___024root___ico_sequent__TOP__0(Vtop___024root* vlSelf) 
                                               ? (vlSelf->top__DOT___InputAlu_io_op1 
                                                  | vlSelf->top__DOT___InputAlu_io_op2)
                                               : 0U)));
+    vlSelf->io_nextpc = vlSelf->io_addr;
     vlSelf->top__DOT___InputReg_io_wd = ((((IData)(vlSelf->top__DOT__Controller__DOT___GEN_0) 
                                            | ((~ (IData)(vlSelf->top__DOT___Controller_io_jump_en)) 
                                               & (0x17U 
@@ -487,6 +488,7 @@ VL_INLINE_OPT void Vtop___024root___nba_sequent__TOP__1(Vtop___024root* vlSelf) 
                                               ? (vlSelf->top__DOT___InputAlu_io_op1 
                                                  | vlSelf->top__DOT___InputAlu_io_op2)
                                               : 0U)));
+    vlSelf->io_nextpc = vlSelf->io_addr;
     vlSelf->top__DOT___InputReg_io_wd = ((((IData)(vlSelf->top__DOT__Controller__DOT___GEN_0) 
                                            | ((~ (IData)(vlSelf->top__DOT___Controller_io_jump_en)) 
                                               & (0x17U 

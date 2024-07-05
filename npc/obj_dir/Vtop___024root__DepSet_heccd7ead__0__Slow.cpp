@@ -248,6 +248,7 @@ VL_ATTR_COLD void Vtop___024root___stl_sequent__TOP__0(Vtop___024root* vlSelf) {
                                               ? (vlSelf->top__DOT___InputAlu_io_op1 
                                                  | vlSelf->top__DOT___InputAlu_io_op2)
                                               : 0U)));
+    vlSelf->io_nextpc = vlSelf->io_addr;
     vlSelf->top__DOT___InputReg_io_wd = ((((IData)(vlSelf->top__DOT__Controller__DOT___GEN_0) 
                                            | ((~ (IData)(vlSelf->top__DOT___Controller_io_jump_en)) 
                                               & (0x17U 
@@ -343,6 +344,7 @@ VL_ATTR_COLD void Vtop___024root___ctor_var_reset(Vtop___024root* vlSelf) {
     vlSelf->io_addr = VL_RAND_RESET_I(32);
     vlSelf->io_data = VL_RAND_RESET_I(32);
     vlSelf->io_mem_wr = VL_RAND_RESET_I(1);
+    vlSelf->io_nextpc = VL_RAND_RESET_I(32);
     vlSelf->top__DOT___InputReg_io_wd = VL_RAND_RESET_I(32);
     vlSelf->top__DOT___InputAlu_io_op1 = VL_RAND_RESET_I(32);
     vlSelf->top__DOT___InputAlu_io_op2 = VL_RAND_RESET_I(32);

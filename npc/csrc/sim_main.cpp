@@ -16,50 +16,12 @@ bool nemutrap = false;
 void print_reg(Vtop *top);
 void scanf_mem();
 void sdb(char *c, Vtop *top);
+void ftrace(Vtop *top);
 bool finsh_sdb = false;
 extern u_int8_t mem[MEM_SIZE];
 extern long size;
 
-
-// 模拟内存空间
-// const u_int32_t instmem[10240] = {
-// 0x00160413,                 //addi	s0,a2,1
-// 0x00000297,                 //auipc rd = 5 存储的值为0x80000001
-// 0x000011B7,                 //lui	rd = 3
-// // 0x001283E7,                 //jalr	rd = 7 rs = 5 imm = 0，pc跳转至5号寄存器的值+imm，即0x80000001
-// // 0x0040026F,                 //jal	rd = 4
-// 0x00100072,                 //ebreak
-// 0x00100072,                 //ebreak
-// 0x00100072                 //ebreak
-// };  
-
-// uint32_t datamem[1024] = {0}; 
-
-
-// uint32_t  pmem_read(uint32_t pc){
-//   static uint32_t  base = 0x80000000; 
-//   uint32_t inst;
-//   if(pc != 0){
-//     printf("pc = %x\n", pc);
-//     // printf("base = %x\n", base);
-//     assert(pc >= base);
-//     inst = instmem[pc - base];
-//     printf("inst = %08x\n", inst);
-//     // base += 3;  //每次读取一个指令，地址加4
-//   }
-//   else inst = 0;
-  
-//   if(inst == 0x00100072) 
-//     nemutrap = true;
-//   return inst;
-// }
-
-// void  pmem_write(uint32_t addr, uint32_t data){
-//   static uint32_t  base = 0x80000000;   //写入的地址变换有问题
-//   if(addr != 0){
-//     datamem[addr - base] = data;  
-//   }
-// }
+// extern void itrace(Vtop *top);
 
 void step_and_dump_wave(Vtop* top, VerilatedVcdC* tfp, VerilatedContext* context){
   top->eval();
@@ -106,8 +68,8 @@ int main(int argc, char** argv, char** env) {
       // top->io_inst = pmem_read(top->io_pc);
       // printf("即将要取的pc = %x\n", top->io_pc);
       top->io_inst = mem_read(top->io_pc, 4);
-      printf("pc = %x, inst = %08x\n", top->io_pc, top->io_inst);
-      top->eval();
+      // printf("pc = %x, inst = %08x\n", top->io_pc, top->io_inst);
+      ftrace(top);
 
 //sdb
       if(!finsh_sdb){
@@ -118,10 +80,12 @@ int main(int argc, char** argv, char** env) {
       // top->eval();
       if(top->io_inst == 0x00100073){  //ebreak
         nemutrap = true;
-        if(top->rootp->top__DOT__RegisterFile__DOT___GEN[1] == 0){  //读取a0寄存器的值
+        if(top->rootp->top__DOT__RegisterFile__DOT___GEN[10] == 0){  //读取a0寄存器的值
           printf("\033[;36mHIT GOOD TRAP!\033[0m\n"); //修改字体颜色
         }else{
-          printf("HIT BAD TRAP!\n");
+          printf("\033[;36mHIT BAD TRAP!\033[0m\n");
+          printf("The Regs are: \n");
+          print_reg(top);
         }
       }
     }
@@ -177,7 +141,21 @@ void sdb(char *c, Vtop *top){
     getchar();
     getchar();
   }else{
-    getchar();
+    // getchar();
+    return;
+  }
+}
+
+
+//for ftrace
+void ftrace(Vtop *top){
+  int opcode = 0x0000007f;
+  if((top->io_inst & opcode) == 0x0000006f || (top->io_inst & opcode) == 0x00000067 && top->io_inst != 0x00008067){
+    top->eval();
+    printf("pc = %x, inst = %08x\t [call %08x]\n", top->io_pc, top->io_inst, top->io_nextpc);
+  }else if(top->io_inst == 0x00008067){
+    printf("pc = %x, inst = %08x\t [ret  %08x]\n", top->io_pc, top->io_inst, top->rootp->top__DOT__RegisterFile__DOT___GEN[1]);
+  }else{
     return;
   }
 }

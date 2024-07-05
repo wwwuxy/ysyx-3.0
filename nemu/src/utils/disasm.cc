@@ -92,6 +92,8 @@ extern "C" void init_disasm(const char *triple) {
     gIP->applyTargetSpecificCLOption("no-aliases");
 }
 
+
+//*str用来存储反汇编结果，size为str的大小，pc为当前指令的地址，code为指令的二进制码，nbyte为指令的长度
 extern "C" void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte) {
   MCInst inst;
   llvm::ArrayRef<uint8_t> arr(code, nbyte);
