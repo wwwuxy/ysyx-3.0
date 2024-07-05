@@ -18,7 +18,6 @@ Vtop::Vtop(VerilatedContext* _vcontextp__, const char* _vcname__)
     , io_pc{vlSymsp->TOP.io_pc}
     , io_addr{vlSymsp->TOP.io_addr}
     , io_data{vlSymsp->TOP.io_data}
-    , io_a0{vlSymsp->TOP.io_a0}
     , rootp{&(vlSymsp->TOP)}
 {
     // Register model with the context

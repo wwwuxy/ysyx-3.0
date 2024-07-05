@@ -1,6 +1,6 @@
 #include "include.h"
 
-uint8_t mem[MEM_SIZE];  //模拟内存空间
+uint8_t mem[MEM_SIZE];  //开辟模拟内存空间
 
 uint8_t* guest_to_host(uint32_t paddr){ //将物理地址(4字节对齐)转换为模拟内存地址
     return mem + paddr - MEM_START;     //paddr是实际物理地址，例如0x80000004，减去物理地址的起始地址MEM_START，得到在模拟内存中的偏移量，加上mem的起始地址，得到在模拟内存中的实际地址

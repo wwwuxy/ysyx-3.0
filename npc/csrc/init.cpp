@@ -1,7 +1,9 @@
 #include <getopt.h>
-#include"include.h"
+#include "include.h"
 
+void scanf_mem();
 static char *img_file = NULL;
+long size;
 
 static int parse_args(int argc, char *argv[]){
   const static option table[] = {
@@ -17,7 +19,7 @@ static int parse_args(int argc, char *argv[]){
   return 0;
 }
 
-extern uint8_t mem[MEM_SIZE];
+extern uint8_t mem[MEM_SIZE]; //通过extern关键字引用mem数组(mem.cpp中定义)
 
 static void load_img(char *img_file ){
   if(img_file == NULL){
@@ -29,21 +31,13 @@ static void load_img(char *img_file ){
 
 //size表示文件的大小
   fseek(fp, 0, SEEK_END);
-  long size = ftell(fp) - 1;
+  size = ftell(fp) - 1;
   // printf("The image is %s, size = %ld\n", img_file, size);
   
   fseek(fp, 0, SEEK_SET);
   int ret = fread(mem, size, 1, fp);    //将文件内容读入内存
   assert(ret == 1);
 
-//打印内存内容
-  // printf("mem content:\n");
-  // for (int i = 0; i < size; i++) {
-  //   printf("%02X ", mem[i]);
-  //   if ((i + 1) % 16 == 0) {
-  //     printf("\n");
-  //   }
-  // }
   fclose(fp);
 }
 
@@ -51,3 +45,5 @@ void init_npc(int argc, char *argv[]){
   parse_args(argc, argv);
   load_img(img_file);
 }
+
+

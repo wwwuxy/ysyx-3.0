@@ -8,9 +8,18 @@
 #include "verilated_vcd_c.h" //可选，如果要导出vcd则需要加上
 #include <svdpi.h> // 包含SystemVerilog DPI头文件,实现verilog与c的双向通信
 
+#include "../obj_dir/Vtop___024root.h"  //存放模块的各种输入输出信号和内部状态变量
+
 int SIM_TIME = 100;         //设置仿真时间上限
 
 bool nemutrap = false;
+void print_reg(Vtop *top);
+void scanf_mem();
+void sdb(char *c, Vtop *top);
+bool finsh_sdb = false;
+extern u_int8_t mem[MEM_SIZE];
+extern long size;
+
 
 // 模拟内存空间
 // const u_int32_t instmem[10240] = {
@@ -97,13 +106,19 @@ int main(int argc, char** argv, char** env) {
       // top->io_inst = pmem_read(top->io_pc);
       // printf("即将要取的pc = %x\n", top->io_pc);
       top->io_inst = mem_read(top->io_pc, 4);
-      // printf("pc = %x, inst = %08x\n", top->io_pc, top->io_inst);
-      // top->eval();
+      printf("pc = %x, inst = %08x\n", top->io_pc, top->io_inst);
+      top->eval();
+
+//sdb
+      if(!finsh_sdb){
+        char c = getchar();
+        sdb(&c, top);
+      }
       // printf("imm= %x\n",top->io_imm);
       // top->eval();
       if(top->io_inst == 0x00100073){  //ebreak
         nemutrap = true;
-        if(top->io_a0 == 0){
+        if(top->rootp->top__DOT__RegisterFile__DOT___GEN[1] == 0){  //读取a0寄存器的值
           printf("\033[;36mHIT GOOD TRAP!\033[0m\n"); //修改字体颜色
         }else{
           printf("HIT BAD TRAP!\n");
@@ -130,3 +145,39 @@ int main(int argc, char** argv, char** env) {
   return 0;
 }
 
+
+// for sdb 
+void print_reg(Vtop *top){
+  for(int i=0; i<32; i++){
+    printf("x[%d] = 0x%08x\n", i, top->rootp->top__DOT__RegisterFile__DOT___GEN[i]);
+  }
+}
+
+ void scanf_mem(){
+    printf("mem content:\n");
+    for (int i = 0; i < size; i++) {
+        printf("%02X ", mem[i]);
+        if ((i + 1) % 16 == 0) {
+        printf("\n");
+        }
+    }
+    printf("\n");
+}
+
+void sdb(char *c, Vtop *top){
+  if(*c == 'r'){
+    print_reg(top);
+    getchar();
+    getchar();
+  }else if(*c == 'c'){
+    finsh_sdb = true;
+    return;
+  }else if(*c == 'm'){
+    scanf_mem();
+    getchar();
+    getchar();
+  }else{
+    getchar();
+    return;
+  }
+}

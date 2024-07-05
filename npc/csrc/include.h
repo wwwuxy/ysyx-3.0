@@ -7,6 +7,7 @@
 #define MEM_END 0x87ffffff
 #define MEM_SIZE  MEM_END + 1 - MEM_START
 
+
 void init_npc(int argc, char *argv[]);
 uint8_t* guest_to_host(uint32_t paddr);
 uint32_t host_to_guest(uint8_t *haddr);

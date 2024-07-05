@@ -18,7 +18,6 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->declBus(c+42,"io_addr", false,-1, 31,0);
     tracep->declBus(c+43,"io_data", false,-1, 31,0);
     tracep->declBit(c+44,"io_mem_wr", false,-1);
-    tracep->declBus(c+45,"io_a0", false,-1, 31,0);
     tracep->pushNamePrefix("top ");
     tracep->declBit(c+38,"clock", false,-1);
     tracep->declBit(c+39,"reset", false,-1);
@@ -27,49 +26,48 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->declBus(c+42,"io_addr", false,-1, 31,0);
     tracep->declBus(c+43,"io_data", false,-1, 31,0);
     tracep->declBit(c+44,"io_mem_wr", false,-1);
-    tracep->declBus(c+45,"io_a0", false,-1, 31,0);
     tracep->pushNamePrefix("Alu ");
-    tracep->declBus(c+46,"io_op1", false,-1, 31,0);
+    tracep->declBus(c+45,"io_op1", false,-1, 31,0);
     tracep->declBus(c+1,"io_op2", false,-1, 31,0);
-    tracep->declBus(c+47,"io_alu_sel", false,-1, 12,0);
+    tracep->declBus(c+46,"io_alu_sel", false,-1, 12,0);
     tracep->declBus(c+42,"io_rsl", false,-1, 31,0);
-    tracep->declQuad(c+48,"umovl", false,-1, 62,0);
+    tracep->declQuad(c+47,"umovl", false,-1, 62,0);
     tracep->popNamePrefix(1);
     tracep->pushNamePrefix("Controller ");
     tracep->declBus(c+40,"io_inst", false,-1, 31,0);
     tracep->declBit(c+2,"io_rf_wr_en", false,-1);
-    tracep->declBus(c+50,"io_rf_wr_sel", false,-1, 2,0);
+    tracep->declBus(c+49,"io_rf_wr_sel", false,-1, 2,0);
     tracep->declBit(c+3,"io_alu_a_sel", false,-1);
-    tracep->declBus(c+47,"io_alu_sel", false,-1, 12,0);
+    tracep->declBus(c+46,"io_alu_sel", false,-1, 12,0);
     tracep->declBit(c+4,"io_jump_en", false,-1);
     tracep->declBus(c+1,"io_imm", false,-1, 31,0);
-    tracep->declBit(c+51,"isI_type", false,-1);
-    tracep->declBit(c+52,"is_auipc", false,-1);
-    tracep->declBit(c+53,"is_lui", false,-1);
-    tracep->declBit(c+54,"is_jal", false,-1);
-    tracep->declBit(c+55,"is_jalr", false,-1);
+    tracep->declBit(c+50,"isI_type", false,-1);
+    tracep->declBit(c+51,"is_auipc", false,-1);
+    tracep->declBit(c+52,"is_lui", false,-1);
+    tracep->declBit(c+53,"is_jal", false,-1);
+    tracep->declBit(c+54,"is_jalr", false,-1);
     tracep->popNamePrefix(1);
     tracep->pushNamePrefix("InputAlu ");
-    tracep->declBus(c+56,"io_rs1", false,-1, 31,0);
+    tracep->declBus(c+55,"io_rs1", false,-1, 31,0);
     tracep->declBus(c+1,"io_imm", false,-1, 31,0);
     tracep->declBus(c+41,"io_pc", false,-1, 31,0);
     tracep->declBit(c+3,"io_alu_a_sel", false,-1);
-    tracep->declBus(c+46,"io_op1", false,-1, 31,0);
+    tracep->declBus(c+45,"io_op1", false,-1, 31,0);
     tracep->declBus(c+1,"io_op2", false,-1, 31,0);
     tracep->popNamePrefix(1);
     tracep->pushNamePrefix("InputReg ");
     tracep->declBus(c+42,"io_alu_out", false,-1, 31,0);
     tracep->declBus(c+40,"io_dm_out", false,-1, 31,0);
-    tracep->declBus(c+50,"io_rf_wr_sel", false,-1, 2,0);
-    tracep->declBus(c+57,"io_storepc", false,-1, 31,0);
-    tracep->declBus(c+58,"io_wd", false,-1, 31,0);
+    tracep->declBus(c+49,"io_rf_wr_sel", false,-1, 2,0);
+    tracep->declBus(c+56,"io_storepc", false,-1, 31,0);
+    tracep->declBus(c+57,"io_wd", false,-1, 31,0);
     tracep->popNamePrefix(1);
     tracep->pushNamePrefix("Pc ");
     tracep->declBit(c+38,"clock", false,-1);
     tracep->declBit(c+39,"reset", false,-1);
     tracep->declBit(c+4,"io_jump_en", false,-1);
     tracep->declBus(c+42,"io_jump_pc", false,-1, 31,0);
-    tracep->declBus(c+57,"io_dnpc", false,-1, 31,0);
+    tracep->declBus(c+56,"io_dnpc", false,-1, 31,0);
     tracep->declBus(c+41,"io_next_pc", false,-1, 31,0);
     tracep->declBus(c+5,"pc", false,-1, 31,0);
     tracep->pushNamePrefix("unnamedblk1 ");
@@ -79,10 +77,9 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->declBit(c+39,"reset", false,-1);
     tracep->declBus(c+40,"io_inst", false,-1, 31,0);
     tracep->declBit(c+2,"io_wr_en", false,-1);
-    tracep->declBus(c+58,"io_wd", false,-1, 31,0);
-    tracep->declBus(c+56,"io_rd1", false,-1, 31,0);
+    tracep->declBus(c+57,"io_wd", false,-1, 31,0);
+    tracep->declBus(c+55,"io_rd1", false,-1, 31,0);
     tracep->declBus(c+43,"io_rd2", false,-1, 31,0);
-    tracep->declBus(c+45,"io_a0", false,-1, 31,0);
     tracep->declBus(c+6,"FileReg_0", false,-1, 31,0);
     tracep->declBus(c+7,"FileReg_1", false,-1, 31,0);
     tracep->declBus(c+8,"FileReg_2", false,-1, 31,0);
@@ -205,9 +202,8 @@ VL_ATTR_COLD void Vtop___024root__trace_full_sub_0(Vtop___024root* vlSelf, Veril
     bufp->fullIData(oldp+42,(vlSelf->io_addr),32);
     bufp->fullIData(oldp+43,(vlSelf->io_data),32);
     bufp->fullBit(oldp+44,(vlSelf->io_mem_wr));
-    bufp->fullIData(oldp+45,(vlSelf->io_a0),32);
-    bufp->fullIData(oldp+46,(vlSelf->top__DOT___InputAlu_io_op1),32);
-    bufp->fullSData(oldp+47,(((IData)(vlSelf->top__DOT__Controller__DOT___GEN_0)
+    bufp->fullIData(oldp+45,(vlSelf->top__DOT___InputAlu_io_op1),32);
+    bufp->fullSData(oldp+46,(((IData)(vlSelf->top__DOT__Controller__DOT___GEN_0)
                                ? 1U : ((0x67U == (0x7fU 
                                                   & vlSelf->io_inst))
                                         ? 0x100U : 
@@ -217,10 +213,10 @@ VL_ATTR_COLD void Vtop___024root__trace_full_sub_0(Vtop___024root* vlSelf, Veril
                                                   (0x7fU 
                                                    & vlSelf->io_inst)) 
                                                  << 6U))))),13);
-    bufp->fullQData(oldp+48,((0x7fffffffffffffffULL 
+    bufp->fullQData(oldp+47,((0x7fffffffffffffffULL 
                               & ((QData)((IData)(vlSelf->top__DOT___InputAlu_io_op1)) 
                                  << (0x1fU & vlSelf->top__DOT___InputAlu_io_op2)))),63);
-    bufp->fullCData(oldp+50,(((IData)(vlSelf->top__DOT__Controller__DOT___GEN_0)
+    bufp->fullCData(oldp+49,(((IData)(vlSelf->top__DOT__Controller__DOT___GEN_0)
                                ? 1U : ((IData)(vlSelf->top__DOT___Controller_io_jump_en)
                                         ? 4U : ((0x17U 
                                                  == 
@@ -233,16 +229,16 @@ VL_ATTR_COLD void Vtop___024root__trace_full_sub_0(Vtop___024root* vlSelf, Veril
                                                   (0x7fU 
                                                    & vlSelf->io_inst)) 
                                                  << 2U))))),3);
-    bufp->fullBit(oldp+51,((0x13U == (0x7fU & vlSelf->io_inst))));
-    bufp->fullBit(oldp+52,((0x17U == (0x7fU & vlSelf->io_inst))));
-    bufp->fullBit(oldp+53,((0x37U == (0x7fU & vlSelf->io_inst))));
-    bufp->fullBit(oldp+54,((0x6fU == (0x7fU & vlSelf->io_inst))));
-    bufp->fullBit(oldp+55,((0x67U == (0x7fU & vlSelf->io_inst))));
-    bufp->fullIData(oldp+56,(vlSelf->top__DOT__RegisterFile__DOT___GEN[
+    bufp->fullBit(oldp+50,((0x13U == (0x7fU & vlSelf->io_inst))));
+    bufp->fullBit(oldp+51,((0x17U == (0x7fU & vlSelf->io_inst))));
+    bufp->fullBit(oldp+52,((0x37U == (0x7fU & vlSelf->io_inst))));
+    bufp->fullBit(oldp+53,((0x6fU == (0x7fU & vlSelf->io_inst))));
+    bufp->fullBit(oldp+54,((0x67U == (0x7fU & vlSelf->io_inst))));
+    bufp->fullIData(oldp+55,(vlSelf->top__DOT__RegisterFile__DOT___GEN[
                              (0x1fU & (vlSelf->io_inst 
                                        >> 0xfU))]),32);
-    bufp->fullIData(oldp+57,(((IData)(vlSelf->top__DOT___Controller_io_jump_en)
+    bufp->fullIData(oldp+56,(((IData)(vlSelf->top__DOT___Controller_io_jump_en)
                                ? ((IData)(4U) + vlSelf->top__DOT__Pc__DOT__pc)
                                : vlSelf->top__DOT__Pc__DOT__pc)),32);
-    bufp->fullIData(oldp+58,(vlSelf->top__DOT___InputReg_io_wd),32);
+    bufp->fullIData(oldp+57,(vlSelf->top__DOT___InputReg_io_wd),32);
 }
