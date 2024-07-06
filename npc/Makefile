@@ -12,8 +12,8 @@ VERILATOR_FLAGS += -j 16
 # run info
 OBJ_DIR := ./obj_dir
 BIN := $(OBJ_DIR)/V$(TOPNAME)
-IMG ?= ../am-kernels/tests/cpu-tests/build/dummy-riscv32e-npc.bin
-RUN_ARGS := --img=$(IMG)
+IMG ?= 
+RUN_ARGS := --img=$(IMG) 
 
 
 # sim

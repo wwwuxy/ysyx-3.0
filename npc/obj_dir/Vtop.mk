@@ -41,9 +41,11 @@ VM_USER_LDLIBS = \
 
 # User .cpp files (from .cpp's on Verilator command line)
 VM_USER_CLASSES = \
+	difftest \
 	init \
 	itrace \
 	mem \
+	reg \
 	sim_main \
 
 # User .cpp directories (from .cpp's on Verilator command line)
@@ -60,11 +62,15 @@ include $(VERILATOR_ROOT)/include/verilated.mk
 ### Executable rules... (from --exe)
 VPATH += $(VM_USER_DIR)
 
+difftest.o: /home/wuxy/ysyx-workbench/npc/csrc/difftest.cpp
+	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
 init.o: /home/wuxy/ysyx-workbench/npc/csrc/init.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
 itrace.o: /home/wuxy/ysyx-workbench/npc/csrc/itrace.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
 mem.o: /home/wuxy/ysyx-workbench/npc/csrc/mem.cpp
+	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
+reg.o: /home/wuxy/ysyx-workbench/npc/csrc/reg.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
 sim_main.o: /home/wuxy/ysyx-workbench/npc/csrc/sim_main.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<

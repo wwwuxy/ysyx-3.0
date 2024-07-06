@@ -18,15 +18,37 @@
 #include <difftest-def.h>
 #include <memory/paddr.h>
 
-__EXPORT void difftest_memcpy(paddr_t addr, void *buf, size_t n, bool direction) {
+// 把DUT的内存拷贝到REF，从而有相同的输入   buf-->mem[addr]
+__EXPORT void difftest_memcpy(uint32_t addr, void *buf, int n, bool direction) {
+  if(direction == DIFFTEST_TO_REF) {
+    for (int i = 0; i < n; i++) {
+      paddr_write(addr+i,1,*((uint8_t*)buf+i));
+    }
+  }
+  else {
+    assert(0);
+  }
   assert(0);
 }
 
-__EXPORT void difftest_regcpy(void *dut, bool direction) {
+// 拷贝寄存器
+__EXPORT void difftest_regcpy(CPU_state dut, bool direction) {
+  if(direction == DIFFTEST_TO_REF) {
+    for(int i = 0; i < 32; i ++) {
+      cpu.gpr[i] = dut.gpr[i];  // 把dut的寄存器拷贝到nemu
+    }
+  }
+  else { 
+    for(int i = 0; i < 32; i ++) {
+      dut.gpr[i] = cpu.gpr[i];  // 把nemu的寄存器拷贝到dut
+    }
+  }
   assert(0);
 }
 
+// 让REF执行n次
 __EXPORT void difftest_exec(uint64_t n) {
+  cpu_exec(n);
   assert(0);
 }
 
@@ -34,7 +56,7 @@ __EXPORT void difftest_raise_intr(word_t NO) {
   assert(0);
 }
 
-__EXPORT void difftest_init(int port) {
+__EXPORT void difftest_init() {
   void init_mem();
   init_mem();
   /* Perform ISA dependent initialization. */

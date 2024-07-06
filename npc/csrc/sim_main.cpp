@@ -8,18 +8,20 @@
 #include "verilated_vcd_c.h" //可选，如果要导出vcd则需要加上
 #include <svdpi.h> // 包含SystemVerilog DPI头文件,实现verilog与c的双向通信
 
-#include "../obj_dir/Vtop___024root.h"  //存放模块的各种输入输出信号和内部状态变量
 
-int SIM_TIME = 100;         //设置仿真时间上限
+
+int SIM_TIME = 200;         //设置仿真时间上限
 
 bool nemutrap = false;
 void print_reg(Vtop *top);
 void scanf_mem();
 void sdb(char *c, Vtop *top);
 void ftrace(Vtop *top);
+void inti_dut_reg(Vtop *top);
 bool finsh_sdb = false;
 extern u_int8_t mem[MEM_SIZE];
 extern long size;
+// extern *npc_reg;
 
 // extern void itrace(Vtop *top);
 
@@ -82,10 +84,6 @@ int main(int argc, char** argv, char** env) {
         nemutrap = true;
         if(top->rootp->top__DOT__RegisterFile__DOT___GEN[10] == 0){  //读取a0寄存器的值
           printf("\033[;36mHIT GOOD TRAP!\033[0m\n"); //修改字体颜色
-        }else{
-          printf("\033[;36mHIT BAD TRAP!\033[0m\n");
-          printf("The Regs are: \n");
-          print_reg(top);
         }
       }
     }
@@ -96,10 +94,15 @@ int main(int argc, char** argv, char** env) {
         
     //for ebreak, finish simulation
     if(nemutrap) {
-      SIM_TIME = contextp->time() + 1;  //for ebreak, finish simulation
-      nemutrap = false;
+      // SIM_TIME = contextp->time() + 1;  //for ebreak, finish simulation
+      break;
     }
    }
+
+//while循环结束，nemutrap还未被置true，说明没有触发ebreak
+  if(!nemutrap){
+    printf("\033[;36mHIT BAD TRAP!\033[0m\n");
+}
 
 //exit
   step_and_dump_wave(top, tfp, contextp);
@@ -159,3 +162,8 @@ void ftrace(Vtop *top){
     return;
   }
 }
+
+//for difftest
+// void inti_dut_reg(Vtop *top){   //把NPC的寄存器数据存放到npc_reg中
+//     npc_reg = top->rootp->top__DOT__RegisterFile__DOT___GEN;
+// }
