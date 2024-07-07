@@ -3,17 +3,20 @@
 
 void scanf_mem();
 static char *img_file = NULL;
+static char *diff_file = NULL;
 long size;
 
 static int parse_args(int argc, char *argv[]){
   const static option table[] = {
-    {"img", required_argument, NULL, 'i'},
-    {0    , 0                , NULL,  0 },
+    {"img" , required_argument, NULL, 'i'},
+    {"diff", required_argument, NULL, 'd'},
+    {0     , 0                , NULL,  0 },
   };
   int o;
-  while((o = getopt_long(argc, argv, "-i:", table, NULL)) != -1){
+  while((o = getopt_long(argc, argv, "-i:d:", table, NULL)) != -1){
     switch(o){
       case 'i': img_file = optarg; break;
+      case 'd': diff_file = optarg; break;
     }
   }
   return 0;
@@ -44,6 +47,7 @@ static void load_img(char *img_file ){
 void init_npc(int argc, char *argv[]){
   parse_args(argc, argv);
   load_img(img_file);
-}
 
+  init_difftest(diff_file, size);  //加载动态链接库
+}
 

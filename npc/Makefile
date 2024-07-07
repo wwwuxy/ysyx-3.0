@@ -13,7 +13,8 @@ VERILATOR_FLAGS += -j 16
 OBJ_DIR := ./obj_dir
 BIN := $(OBJ_DIR)/V$(TOPNAME)
 IMG ?= 
-RUN_ARGS := --img=$(IMG) 
+DIFF ?= $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
+RUN_ARGS := --img=$(IMG) --diff=${DIFF}
 
 
 # sim

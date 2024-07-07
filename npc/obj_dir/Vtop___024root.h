@@ -32,7 +32,6 @@ class Vtop___024root final : public VerilatedModule {
     IData/*31:0*/ top__DOT___InputAlu_io_op1;
     IData/*31:0*/ top__DOT___InputAlu_io_op2;
     IData/*31:0*/ top__DOT__Pc__DOT__pc;
-    IData/*31:0*/ top__DOT__RegisterFile__DOT__FileReg_0;
     IData/*31:0*/ top__DOT__RegisterFile__DOT__FileReg_1;
     IData/*31:0*/ top__DOT__RegisterFile__DOT__FileReg_2;
     IData/*31:0*/ top__DOT__RegisterFile__DOT__FileReg_3;

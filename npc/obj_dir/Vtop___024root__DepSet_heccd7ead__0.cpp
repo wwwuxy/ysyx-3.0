@@ -161,7 +161,6 @@ VL_INLINE_OPT void Vtop___024root___nba_sequent__TOP__0(Vtop___024root* vlSelf) 
     // Body
     if (vlSelf->reset) {
         vlSelf->top__DOT__Pc__DOT__pc = 0x80000000U;
-        vlSelf->top__DOT__RegisterFile__DOT__FileReg_0 = 0U;
         vlSelf->top__DOT__RegisterFile__DOT__FileReg_1 = 0U;
         vlSelf->top__DOT__RegisterFile__DOT__FileReg_2 = 0U;
         vlSelf->top__DOT__RegisterFile__DOT__FileReg_3 = 0U;
@@ -201,12 +200,6 @@ VL_INLINE_OPT void Vtop___024root___nba_sequent__TOP__0(Vtop___024root* vlSelf) 
         vlSelf->top__DOT__RegisterFile__DOT__unnamedblk1__DOT___GEN_0 
             = vlSelf->top__DOT__RegisterFile__DOT___GEN[
             (0x1fU & (vlSelf->io_inst >> 7U))];
-        vlSelf->top__DOT__RegisterFile__DOT__FileReg_0 
-            = ((0U == (0x1fU & (vlSelf->io_inst >> 7U)))
-                ? ((IData)(vlSelf->top__DOT___Controller_io_rf_wr_en)
-                    ? vlSelf->top__DOT___InputReg_io_wd
-                    : vlSelf->top__DOT__RegisterFile__DOT__unnamedblk1__DOT___GEN_0)
-                : 0U);
         if ((1U == (0x1fU & (vlSelf->io_inst >> 7U)))) {
             vlSelf->top__DOT__RegisterFile__DOT__FileReg_1 
                 = ((IData)(vlSelf->top__DOT___Controller_io_rf_wr_en)
@@ -395,7 +388,7 @@ VL_INLINE_OPT void Vtop___024root___nba_sequent__TOP__0(Vtop___024root* vlSelf) 
         }
     }
     vlSelf->io_pc = vlSelf->top__DOT__Pc__DOT__pc;
-    vlSelf->top__DOT__RegisterFile__DOT___GEN[0U] = vlSelf->top__DOT__RegisterFile__DOT__FileReg_0;
+    vlSelf->top__DOT__RegisterFile__DOT___GEN[0U] = 0U;
     vlSelf->top__DOT__RegisterFile__DOT___GEN[1U] = vlSelf->top__DOT__RegisterFile__DOT__FileReg_1;
     vlSelf->top__DOT__RegisterFile__DOT___GEN[2U] = vlSelf->top__DOT__RegisterFile__DOT__FileReg_2;
     vlSelf->top__DOT__RegisterFile__DOT___GEN[3U] = vlSelf->top__DOT__RegisterFile__DOT__FileReg_3;
@@ -559,7 +552,7 @@ void Vtop___024root___eval(Vtop___024root* vlSelf) {
 #ifdef VL_DEBUG
                 Vtop___024root___dump_triggers__ico(vlSelf);
 #endif
-                VL_FATAL_MT("/home/wuxy/ysyx-workbench/npc/vsrc/top.v", 535, "", "Input combinational region did not converge.");
+                VL_FATAL_MT("/home/wuxy/ysyx-workbench/npc/vsrc/top.v", 524, "", "Input combinational region did not converge.");
             }
             vlSelf->__VicoIterCount = ((IData)(1U) 
                                        + vlSelf->__VicoIterCount);
@@ -582,7 +575,7 @@ void Vtop___024root___eval(Vtop___024root* vlSelf) {
 #ifdef VL_DEBUG
                     Vtop___024root___dump_triggers__act(vlSelf);
 #endif
-                    VL_FATAL_MT("/home/wuxy/ysyx-workbench/npc/vsrc/top.v", 535, "", "Active region did not converge.");
+                    VL_FATAL_MT("/home/wuxy/ysyx-workbench/npc/vsrc/top.v", 524, "", "Active region did not converge.");
                 }
                 vlSelf->__VactIterCount = ((IData)(1U) 
                                            + vlSelf->__VactIterCount);
@@ -597,7 +590,7 @@ void Vtop___024root___eval(Vtop___024root* vlSelf) {
 #ifdef VL_DEBUG
                 Vtop___024root___dump_triggers__nba(vlSelf);
 #endif
-                VL_FATAL_MT("/home/wuxy/ysyx-workbench/npc/vsrc/top.v", 535, "", "NBA region did not converge.");
+                VL_FATAL_MT("/home/wuxy/ysyx-workbench/npc/vsrc/top.v", 524, "", "NBA region did not converge.");
             }
             __VnbaIterCount = ((IData)(1U) + __VnbaIterCount);
             Vtop___024root___eval_nba(vlSelf);

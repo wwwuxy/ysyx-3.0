@@ -61,7 +61,7 @@ VL_ATTR_COLD void Vtop___024root___eval_settle(Vtop___024root* vlSelf) {
 #ifdef VL_DEBUG
                 Vtop___024root___dump_triggers__stl(vlSelf);
 #endif
-                VL_FATAL_MT("/home/wuxy/ysyx-workbench/npc/vsrc/top.v", 535, "", "Settle region did not converge.");
+                VL_FATAL_MT("/home/wuxy/ysyx-workbench/npc/vsrc/top.v", 524, "", "Settle region did not converge.");
             }
             vlSelf->__VstlIterCount = ((IData)(1U) 
                                        + vlSelf->__VstlIterCount);
@@ -151,7 +151,7 @@ VL_ATTR_COLD void Vtop___024root___stl_sequent__TOP__0(Vtop___024root* vlSelf) {
                                                          == 
                                                          (0x707fU 
                                                           & vlSelf->io_inst)));
-    vlSelf->top__DOT__RegisterFile__DOT___GEN[0U] = vlSelf->top__DOT__RegisterFile__DOT__FileReg_0;
+    vlSelf->top__DOT__RegisterFile__DOT___GEN[0U] = 0U;
     vlSelf->top__DOT__RegisterFile__DOT___GEN[1U] = vlSelf->top__DOT__RegisterFile__DOT__FileReg_1;
     vlSelf->top__DOT__RegisterFile__DOT___GEN[2U] = vlSelf->top__DOT__RegisterFile__DOT__FileReg_2;
     vlSelf->top__DOT__RegisterFile__DOT___GEN[3U] = vlSelf->top__DOT__RegisterFile__DOT__FileReg_3;
@@ -352,7 +352,6 @@ VL_ATTR_COLD void Vtop___024root___ctor_var_reset(Vtop___024root* vlSelf) {
     vlSelf->top__DOT___Controller_io_alu_a_sel = VL_RAND_RESET_I(1);
     vlSelf->top__DOT___Controller_io_jump_en = VL_RAND_RESET_I(1);
     vlSelf->top__DOT__Pc__DOT__pc = VL_RAND_RESET_I(32);
-    vlSelf->top__DOT__RegisterFile__DOT__FileReg_0 = VL_RAND_RESET_I(32);
     vlSelf->top__DOT__RegisterFile__DOT__FileReg_1 = VL_RAND_RESET_I(32);
     vlSelf->top__DOT__RegisterFile__DOT__FileReg_2 = VL_RAND_RESET_I(32);
     vlSelf->top__DOT__RegisterFile__DOT__FileReg_3 = VL_RAND_RESET_I(32);

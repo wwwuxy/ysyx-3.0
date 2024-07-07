@@ -28,28 +28,28 @@ __EXPORT void difftest_memcpy(uint32_t addr, void *buf, int n, bool direction) {
   else {
     assert(0);
   }
-  assert(0);
 }
 
 // 拷贝寄存器
-__EXPORT void difftest_regcpy(CPU_state dut, bool direction) {
+__EXPORT void difftest_regcpy(CPU_state *dut, bool direction) {
   if(direction == DIFFTEST_TO_REF) {
     for(int i = 0; i < 32; i ++) {
-      cpu.gpr[i] = dut.gpr[i];  // 把dut的寄存器拷贝到nemu
+      cpu.gpr[i] = dut->gpr[i];  // 把dut的寄存器拷贝到nemu
     }
+    cpu.pc = dut->pc;
   }
   else { 
     for(int i = 0; i < 32; i ++) {
-      dut.gpr[i] = cpu.gpr[i];  // 把nemu的寄存器拷贝到dut
+      dut->gpr[i] = cpu.gpr[i];  // 把nemu的寄存器拷贝到dut
     }
+    dut->pc = cpu.pc;
   }
-  assert(0);
 }
 
 // 让REF执行n次
 __EXPORT void difftest_exec(uint64_t n) {
   cpu_exec(n);
-  assert(0);
+  // assert(0);
 }
 
 __EXPORT void difftest_raise_intr(word_t NO) {

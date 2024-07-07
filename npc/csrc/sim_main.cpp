@@ -17,11 +17,12 @@ void print_reg(Vtop *top);
 void scanf_mem();
 void sdb(char *c, Vtop *top);
 void ftrace(Vtop *top);
-void inti_dut_reg(Vtop *top);
+void init_dut_reg(Vtop *top);
 bool finsh_sdb = false;
 extern u_int8_t mem[MEM_SIZE];
 extern long size;
-// extern *npc_reg;
+extern uint32_t npc_reg[32];
+extern uint32_t npc_pc;
 
 // extern void itrace(Vtop *top);
 
@@ -47,7 +48,15 @@ int main(int argc, char** argv, char** env) {
   tfp->open("wave.vcd"); //设置输出文件wave.vcd到当前文件夹
  
  //初始化npc
+  init_dut_reg(top);  //先把NPC的寄存器数据存放到npc_reg中，再初始化npc
+  // printf("npc_reg:\n");
+  // for(int i=0; i<32; i++){
+  //   printf("npc_reg[%d] = %x\n", i, npc_reg[i]);
+  // }
+
   init_npc(argc, argv);
+  
+
   // printf("init_npc done\n");
   // step_and_dump_wave(top, tfp, contextp);
 
@@ -56,9 +65,9 @@ int main(int argc, char** argv, char** env) {
     top->reset = 0;
     if(rst)   top->reset = 1;     //initial pc
     top->eval();
-    if(top->io_mem_wr == 1){
-      // mem_write(top->io_addr, top->io_data);
-    }
+    // if(top->io_mem_wr == 1){
+    //   // mem_write(top->io_addr, top->io_data);
+    // }
 
     if(contextp->time() % 2 == 0){ //seting clk
       top->clock = 0;
@@ -67,17 +76,20 @@ int main(int argc, char** argv, char** env) {
       top->clock = 1;
       rst = false;
       top->eval();
-      // top->io_inst = pmem_read(top->io_pc);
-      // printf("即将要取的pc = %x\n", top->io_pc);
       top->io_inst = mem_read(top->io_pc, 4);
-      // printf("pc = %x, inst = %08x\n", top->io_pc, top->io_inst);
-      ftrace(top);
+      printf("pc = %x, inst = %08x\n", top->io_pc, top->io_inst);
+      npc_pc = top->io_pc;
+      top->eval();
+      init_dut_reg(top);
+      difftest_step();
+      // ftrace(top);
 
 //sdb
       if(!finsh_sdb){
         char c = getchar();
         sdb(&c, top);
       }
+      
       // printf("imm= %x\n",top->io_imm);
       // top->eval();
       if(top->io_inst == 0x00100073){  //ebreak
@@ -163,7 +175,9 @@ void ftrace(Vtop *top){
   }
 }
 
-//for difftest
-// void inti_dut_reg(Vtop *top){   //把NPC的寄存器数据存放到npc_reg中
-//     npc_reg = top->rootp->top__DOT__RegisterFile__DOT___GEN;
-// }
+// for difftest
+void init_dut_reg(Vtop *top){   //把NPC的寄存器数据存放到npc_reg中
+    for(int i=0; i<32; i++){
+        npc_reg[i] = top->rootp->top__DOT__RegisterFile__DOT___GEN[i];
+    }
+}
