@@ -65,10 +65,10 @@ int main(int argc, char** argv, char** env) {
       top->clock = 1;
       rst = false;
       top->eval();
-      // mem_read(top->io_pc, 4);
 
       npc_pc = top->io_pc;
       top->eval();
+      printf("inst = %08x\n", top->io_inst);
 
 //difftest
       init_dut_reg(top);
@@ -90,7 +90,7 @@ int main(int argc, char** argv, char** env) {
         }
       }
     }
-
+    printf("\n");
     step_and_dump_wave(top, tfp, contextp);
         
 //for ebreak, finish simulation
