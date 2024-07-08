@@ -10,8 +10,11 @@ uint32_t host_to_guest(uint8_t *haddr){ //将模拟内存地址转换为物理�
     return haddr - mem + MEM_START;
 };
 
-void mem_write(uint32_t paddr, int len, uint32_t data){ //写入内存
+extern "C" void mem_write(uint32_t paddr, int len, uint32_t data){ //写入内存
     uint8_t *haddr = guest_to_host(paddr); //将物理地址转换为模拟内存地址
+//mtrace
+    // printf("mem_write: paddr = 0x%08x, len = %d, data = 0x%08x\n", paddr, len, data);
+
     switch(len){
         case 1: *(uint8_t  *)haddr = data & 0xff; break; //写入1字节
         case 2: *(uint16_t *)haddr = data; break; //写入2字节
@@ -20,7 +23,11 @@ void mem_write(uint32_t paddr, int len, uint32_t data){ //写入内存
     }
 };
 
-uint32_t mem_read(uint32_t paddr, int len){ //读取内存
+extern "C" uint32_t mem_read(uint32_t paddr, int len){ //读取内存
+    if(paddr < MEM_START) return MEM_START;
+//mtrace
+    printf("mem_read: paddr = 0x%08x, len = %d\n", paddr, len);
+
     uint8_t *haddr = guest_to_host(paddr); //将物理地址转换为模拟内存地址
     switch(len){
         case 1: return *(u_int8_t *)haddr; //读取1字节

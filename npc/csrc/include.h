@@ -13,9 +13,10 @@ enum { DIFFTEST_TO_DUT, DIFFTEST_TO_REF };
 void init_npc(int argc, char *argv[]);
 uint8_t* guest_to_host(uint32_t );
 uint32_t host_to_guest(uint8_t *);
+extern "C"{ 
 void mem_write(uint32_t , int , uint32_t );
 uint32_t mem_read(uint32_t , int );
-
+}
 
 typedef struct{
     uint32_t gpr[32];

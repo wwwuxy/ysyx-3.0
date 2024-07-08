@@ -18,7 +18,7 @@ void scanf_mem();
 void sdb(char *c, Vtop *top);
 void ftrace(Vtop *top);
 void init_dut_reg(Vtop *top);
-bool finsh_sdb = false;
+bool finish_sdb = false;
 extern u_int8_t mem[MEM_SIZE];
 extern long size;
 extern uint32_t npc_reg[32];
@@ -47,51 +47,42 @@ int main(int argc, char** argv, char** env) {
   top->trace(tfp, 0); //这一行将顶层模块 top 的信号连接到波形文件生成器 tfp 上, 0 表示要跟踪的层次深度
   tfp->open("wave.vcd"); //设置输出文件wave.vcd到当前文件夹
  
- //初始化npc
-  init_dut_reg(top);  //先把NPC的寄存器数据存放到npc_reg中，再初始化npc
-  // printf("npc_reg:\n");
-  // for(int i=0; i<32; i++){
-  //   printf("npc_reg[%d] = %x\n", i, npc_reg[i]);
-  // }
-
-  init_npc(argc, argv);
+//初始化npc
   
-
-  // printf("init_npc done\n");
-  // step_and_dump_wave(top, tfp, contextp);
+  init_dut_reg(top);  //先把NPC的寄存器数据存放到npc_reg中，再初始化npc
+  init_npc(argc, argv);
 
    while (contextp->time() < SIM_TIME && !contextp->gotFinish()) { 
 
     top->reset = 0;
     if(rst)   top->reset = 1;     //initial pc
     top->eval();
-    // if(top->io_mem_wr == 1){
-    //   // mem_write(top->io_addr, top->io_data);
-    // }
 
-    if(contextp->time() % 2 == 0){ //seting clk
+    if(contextp->time() % 2 == 0){
       top->clock = 0;
     }
-    else{
+    if(contextp->time() % 2 == 1){
       top->clock = 1;
       rst = false;
       top->eval();
-      top->io_inst = mem_read(top->io_pc, 4);
-      printf("pc = %x, inst = %08x\n", top->io_pc, top->io_inst);
+      // mem_read(top->io_pc, 4);
+
       npc_pc = top->io_pc;
       top->eval();
+
+//difftest
       init_dut_reg(top);
       difftest_step();
-      // ftrace(top);
+      
 
 //sdb
-      if(!finsh_sdb){
+
+      if(!finish_sdb){
         char c = getchar();
         sdb(&c, top);
       }
+      // ftrace(top);
       
-      // printf("imm= %x\n",top->io_imm);
-      // top->eval();
       if(top->io_inst == 0x00100073){  //ebreak
         nemutrap = true;
         if(top->rootp->top__DOT__RegisterFile__DOT___GEN[10] == 0){  //读取a0寄存器的值
@@ -99,12 +90,10 @@ int main(int argc, char** argv, char** env) {
         }
       }
     }
-      // printf(rst ? "reset\n" : "run\n");  //打印当前状态
-      // printf("top->reset = %d\n",top->reset);  //打印当前状态
-    
+
     step_and_dump_wave(top, tfp, contextp);
         
-    //for ebreak, finish simulation
+//for ebreak, finish simulation
     if(nemutrap) {
       // SIM_TIME = contextp->time() + 1;  //for ebreak, finish simulation
       break;
@@ -149,7 +138,7 @@ void sdb(char *c, Vtop *top){
     getchar();
     getchar();
   }else if(*c == 'c'){
-    finsh_sdb = true;
+    finish_sdb = true;
     return;
   }else if(*c == 'm'){
     scanf_mem();

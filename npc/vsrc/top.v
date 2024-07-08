@@ -3,6 +3,8 @@
 /* verilator lint_off UNUSEDSIGNAL */
 /* verilator lint_off BLKSEQ */
 /* verilator lint_off EOFNEWLINE */
+/* verilator lint_off PINMISSING */
+/* verilator lint_off LATCH */
 
 `ifndef RANDOMIZE
   `ifdef RANDOMIZE_REG_INIT
@@ -508,6 +510,7 @@ module inputalu(
   assign io_op2 = io_imm;	
 endmodule
 
+
 module inputreg(	
   input  [31:0] io_alu_out,	
                 io_dm_out,	
@@ -524,15 +527,15 @@ endmodule
 module top(	
   input         clock,	
                 reset,	
-  input  [31:0] io_inst,	
-  output [31:0] io_pc,	
+  output [31:0] io_inst,	
+                io_pc,	
                 io_addr,	
                 io_data,	
-  output        io_mem_wr,	
-  output [31:0] io_nextpc	
+                io_nextpc	
 );
 
   wire [31:0] _InputReg_io_wd;	
+  wire [31:0] _Mem_inst;	
   wire [31:0] _InputAlu_io_op1;	
   wire [31:0] _InputAlu_io_op2;	
   wire        _Controller_io_rf_wr_en;	
@@ -542,6 +545,7 @@ module top(
   wire        _Controller_io_jump_en;	
   wire [31:0] _Controller_io_imm;	
   wire [31:0] _RegisterFile_io_rd1;	
+  wire [31:0] _RegisterFile_io_rd2;	
   wire [31:0] _Alu_io_rsl;	
   wire [31:0] _Pc_io_dnpc;	
   wire [31:0] _Pc_io_next_pc;	
@@ -562,14 +566,14 @@ module top(
   registerfile RegisterFile (	
     .clock    (clock),
     .reset    (reset),
-    .io_inst  (io_inst),
+    .io_inst  (_Mem_inst),	
     .io_wr_en (_Controller_io_rf_wr_en),	
     .io_wd    (_InputReg_io_wd),	
     .io_rd1   (_RegisterFile_io_rd1),
-    .io_rd2   (io_data)
+    .io_rd2   (_RegisterFile_io_rd2)
   );
   controller Controller (	
-    .io_inst      (io_inst),
+    .io_inst      (_Mem_inst),	
     .io_rf_wr_en  (_Controller_io_rf_wr_en),
     .io_rf_wr_sel (_Controller_io_rf_wr_sel),
     .io_alu_a_sel (_Controller_io_alu_a_sel),
@@ -585,16 +589,54 @@ module top(
     .io_op1       (_InputAlu_io_op1),
     .io_op2       (_InputAlu_io_op2)
   );
+  Memory Mem (	
+    .pc        (_Pc_io_next_pc),	
+    .data_addr (_Alu_io_rsl),	
+    .data      (_RegisterFile_io_rd2),	
+    .wr_en     (1'h0),	
+    .rd_en     (1'h1),	
+    .inst      (_Mem_inst)
+  );
   inputreg InputReg (	
     .io_alu_out   (_Alu_io_rsl),	
-    .io_dm_out    (io_inst),
+    .io_dm_out    (_Mem_inst),	
     .io_rf_wr_sel (_Controller_io_rf_wr_sel),	
     .io_storepc   (_Pc_io_dnpc),	
     .io_wd        (_InputReg_io_wd)
   );
+  assign io_inst = _Mem_inst;	
   assign io_pc = _Pc_io_next_pc;	
   assign io_addr = _Alu_io_rsl;	
-  assign io_mem_wr = 1'h0;	
+  assign io_data = _RegisterFile_io_rd2;	
   assign io_nextpc = _Alu_io_rsl;	
 endmodule
 
+
+
+module Memory(
+    input clk,
+    input [31:0] pc,
+    input [31:0] data_addr,
+    input [31:0] data,
+    input wr_en,    
+    input rd_en,    
+    output reg [31:0] inst
+);
+    wire [31:0] len;
+    assign len = 32'd4;
+
+    import "DPI-C" function int mem_read(input int pc, int len);
+
+    import "DPI-C" function void mem_write(input int addr, int len, input int data);
+
+    always @(*) begin
+        if (rd_en) begin
+            inst = mem_read(pc, len);
+        end
+        if (wr_en) begin
+            mem_write(data_addr, len, data);
+        end
+    end
+
+
+endmodule

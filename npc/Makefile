@@ -6,7 +6,7 @@ CSRCS += $(shell find $(abspath ./csrc) -name "*.cpp")
 
 # verilator flags
 VERILATOR_FLAGS += -Wall --cc --trace --exe --build --top-module $(TOPNAME)
-# VERILATOR_FLAGS += --threads-dpi all
+VERILATOR_FLAGS += --threads-dpi all
 VERILATOR_FLAGS += -j 16
 
 # run info

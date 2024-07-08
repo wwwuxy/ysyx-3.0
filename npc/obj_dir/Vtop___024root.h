@@ -15,20 +15,21 @@ class Vtop___024root final : public VerilatedModule {
     // DESIGN SPECIFIC STATE
     VL_IN8(clock,0,0);
     VL_IN8(reset,0,0);
-    VL_OUT8(io_mem_wr,0,0);
     CData/*0:0*/ top__DOT___Controller_io_rf_wr_en;
     CData/*0:0*/ top__DOT___Controller_io_alu_a_sel;
     CData/*0:0*/ top__DOT___Controller_io_jump_en;
     CData/*0:0*/ top__DOT__Controller__DOT___GEN;
     CData/*0:0*/ top__DOT__Controller__DOT___GEN_0;
+    CData/*0:0*/ top__DOT__Mem__DOT__clk;
     CData/*0:0*/ __Vtrigrprev__TOP__clock;
     CData/*0:0*/ __VactContinue;
-    VL_IN(io_inst,31,0);
+    VL_OUT(io_inst,31,0);
     VL_OUT(io_pc,31,0);
     VL_OUT(io_addr,31,0);
     VL_OUT(io_data,31,0);
     VL_OUT(io_nextpc,31,0);
     IData/*31:0*/ top__DOT___InputReg_io_wd;
+    IData/*31:0*/ top__DOT___Mem_inst;
     IData/*31:0*/ top__DOT___InputAlu_io_op1;
     IData/*31:0*/ top__DOT___InputAlu_io_op2;
     IData/*31:0*/ top__DOT__Pc__DOT__pc;
@@ -65,12 +66,11 @@ class Vtop___024root final : public VerilatedModule {
     IData/*31:0*/ top__DOT__RegisterFile__DOT__FileReg_31;
     VlWide<32>/*1023:0*/ top__DOT__RegisterFile__DOT___GEN;
     IData/*31:0*/ top__DOT__RegisterFile__DOT__unnamedblk1__DOT___GEN_0;
+    IData/*31:0*/ __Vfunc_top__DOT__Mem__DOT__mem_read__0__Vfuncout;
     IData/*31:0*/ __VstlIterCount;
-    IData/*31:0*/ __VicoIterCount;
     IData/*31:0*/ __VactIterCount;
-    VlUnpacked<CData/*0:0*/, 3> __Vm_traceActivity;
+    VlUnpacked<CData/*0:0*/, 2> __Vm_traceActivity;
     VlTriggerVec<1> __VstlTriggered;
-    VlTriggerVec<1> __VicoTriggered;
     VlTriggerVec<1> __VactTriggered;
     VlTriggerVec<1> __VnbaTriggered;
 
