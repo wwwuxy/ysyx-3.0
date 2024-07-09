@@ -22,6 +22,7 @@ Vtop::Vtop(VerilatedContext* _vcontextp__, const char* _vcname__)
     , io_alu_out{vlSymsp->TOP.io_alu_out}
     , io_alu_op1{vlSymsp->TOP.io_alu_op1}
     , io_alu_op2{vlSymsp->TOP.io_alu_op2}
+    , io_imm{vlSymsp->TOP.io_imm}
     , rootp{&(vlSymsp->TOP)}
 {
     // Register model with the context

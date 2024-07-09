@@ -16,9 +16,9 @@ extern "C" {
 
 
     // DPI IMPORTS
-    // DPI import at /home/wuxy/ysyx-workbench/npc/vsrc/top.v:713:33
+    // DPI import at /home/wuxy/ysyx-workbench/npc/vsrc/top.v:820:33
     extern int mem_read(int pc, int len);
-    // DPI import at /home/wuxy/ysyx-workbench/npc/vsrc/top.v:715:34
+    // DPI import at /home/wuxy/ysyx-workbench/npc/vsrc/top.v:822:34
     extern void mem_write(int addr, int len, int data);
 
 #ifdef __cplusplus

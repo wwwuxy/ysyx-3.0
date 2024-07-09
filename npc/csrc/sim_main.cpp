@@ -18,7 +18,7 @@ void scanf_mem();
 void sdb(char *c, Vtop *top);
 void ftrace(Vtop *top);
 void init_dut_reg(Vtop *top);
-bool finish_sdb = false;
+bool finish_sdb = true;
 extern u_int8_t mem[MEM_SIZE];
 extern long size;
 extern uint32_t npc_reg[32];
@@ -71,6 +71,7 @@ int main(int argc, char** argv, char** env) {
       printf("alu_out = %08x\n", top->io_alu_out);
       printf("alu_op1 = %08x\n", top->io_alu_op1);
       printf("alu_op2 = %08x\n", top->io_alu_op2);
+      printf("imm = %08x\n", top->io_imm);
 
 //difftest
       init_dut_reg(top);
