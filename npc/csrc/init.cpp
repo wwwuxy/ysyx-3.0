@@ -34,7 +34,7 @@ static void load_img(char *img_file ){
 
 //size表示文件的大小
   fseek(fp, 0, SEEK_END);
-  size = ftell(fp) - 1;
+  size = ftell(fp);
   // printf("The image is %s, size = %ld\n", img_file, size);
   
   fseek(fp, 0, SEEK_SET);

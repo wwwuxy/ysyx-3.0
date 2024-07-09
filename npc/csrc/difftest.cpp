@@ -59,11 +59,12 @@ void difftest_step( ){
     //     return;
     // }
 
+    
 
     ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);    //读出将nemu中运行后的寄存器值
     dut = get_cpu_state(npc_reg, npc_pc);
     checkregs(ref_r, dut);  //对比npc和dut(此时放的是nemu中正确的运行结果)，检查是否相同
-    printf("difftest_step done\n");
+    // printf("difftest_step done\n");
     
     ref_difftest_exec(1);
 

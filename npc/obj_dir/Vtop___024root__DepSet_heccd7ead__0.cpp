@@ -55,10 +55,15 @@ VL_INLINE_OPT void Vtop___024root___nba_sequent__TOP__0(Vtop___024root* vlSelf) 
         vlSelf->top__DOT__RegisterFile__DOT__FileReg_30 = 0U;
         vlSelf->top__DOT__RegisterFile__DOT__FileReg_31 = 0U;
     } else {
-        vlSelf->top__DOT__Pc__DOT__pc = ((IData)(vlSelf->top__DOT___Controller_io_jump_en)
-                                          ? vlSelf->io_addr
-                                          : ((IData)(4U) 
-                                             + vlSelf->top__DOT__Pc__DOT__pc));
+        vlSelf->top__DOT__Pc__DOT__pc = ((0x67U == 
+                                          (0x7fU & vlSelf->top__DOT___Mem_inst))
+                                          ? (0xfffffffeU 
+                                             & vlSelf->io_addr)
+                                          : ((IData)(vlSelf->top__DOT___Controller_io_jump_no_jalr)
+                                              ? (vlSelf->top__DOT__Pc__DOT__pc 
+                                                 + vlSelf->top__DOT___Controller_io_imm)
+                                              : ((IData)(4U) 
+                                                 + vlSelf->top__DOT__Pc__DOT__pc)));
         vlSelf->top__DOT__RegisterFile__DOT__unnamedblk1__DOT___GEN_0 
             = vlSelf->top__DOT__RegisterFile__DOT___GEN[
             (0x1fU & (vlSelf->top__DOT___Mem_inst >> 7U))];
@@ -280,7 +285,6 @@ VL_INLINE_OPT void Vtop___024root___nba_sequent__TOP__0(Vtop___024root* vlSelf) 
                     : vlSelf->top__DOT__RegisterFile__DOT__unnamedblk1__DOT___GEN_0);
         }
     }
-    vlSelf->top__DOT__Controller__DOT__alu_out = vlSelf->io_addr;
     vlSelf->io_pc = vlSelf->top__DOT__Pc__DOT__pc;
     vlSelf->top__DOT__RegisterFile__DOT___GEN[0U] = 0U;
     vlSelf->top__DOT__RegisterFile__DOT___GEN[1U] = vlSelf->top__DOT__RegisterFile__DOT__FileReg_1;
@@ -342,16 +346,13 @@ VL_INLINE_OPT void Vtop___024root___nba_sequent__TOP__0(Vtop___024root* vlSelf) 
     Vtop___024root____Vdpiimwrap_top__DOT__Mem__DOT__mem_read_TOP(vlSelf->io_pc, 4U, vlSelf->__Vfunc_top__DOT__Mem__DOT__mem_read__0__Vfuncout);
     vlSelf->top__DOT___Mem_inst = vlSelf->__Vfunc_top__DOT__Mem__DOT__mem_read__0__Vfuncout;
     vlSelf->io_inst = vlSelf->top__DOT___Mem_inst;
-    vlSelf->top__DOT__Controller__DOT____VdfgTmp_h4202fe99__0 
-        = ((0x67U == (0x7fU & vlSelf->top__DOT___Mem_inst)) 
-           | (0x6fU == (0x7fU & vlSelf->top__DOT___Mem_inst)));
-    vlSelf->top__DOT__Controller__DOT___GEN = ((0x6fU 
-                                                == 
-                                                (0x7fU 
+    vlSelf->__VdfgTmp_h67d67586__0 = ((0x67U == (0x7fU 
                                                  & vlSelf->top__DOT___Mem_inst)) 
-                                               | (0x17U 
-                                                  == 
-                                                  (0x7fU 
+                                      | (0x6fU == (0x7fU 
+                                                   & vlSelf->top__DOT___Mem_inst)));
+    vlSelf->__VdfgTmp_h64c303f7__0 = ((0x67U == (0x7fU 
+                                                 & vlSelf->top__DOT___Mem_inst)) 
+                                      | (0x17U == (0x7fU 
                                                    & vlSelf->top__DOT___Mem_inst)));
     vlSelf->top__DOT__Controller__DOT____VdfgTmp_h4240185c__0 
         = (((- (IData)((vlSelf->top__DOT___Mem_inst 
@@ -360,79 +361,104 @@ VL_INLINE_OPT void Vtop___024root___nba_sequent__TOP__0(Vtop___024root* vlSelf) 
     vlSelf->io_data = vlSelf->top__DOT__RegisterFile__DOT___GEN[
         (0x1fU & (vlSelf->top__DOT___Mem_inst >> 0x14U))];
     vlSelf->top__DOT__Controller__DOT___GEN_1 = (IData)(
+                                                        (0x1063U 
+                                                         == 
+                                                         (0x707fU 
+                                                          & vlSelf->top__DOT___Mem_inst)));
+    vlSelf->top__DOT__Controller__DOT___GEN_0 = (IData)(
                                                         (0x63U 
                                                          == 
                                                          (0x707fU 
                                                           & vlSelf->top__DOT___Mem_inst)));
-    vlSelf->top__DOT__Controller__DOT___GEN_2 = (IData)(
-                                                        (0x13U 
+    vlSelf->top__DOT__Controller__DOT___GEN_6 = (IData)(
+                                                        (0x3013U 
                                                          == 
                                                          (0x707fU 
                                                           & vlSelf->top__DOT___Mem_inst)));
     vlSelf->top__DOT__Controller__DOT__io_mem_wr_en_0 
         = (IData)((0x2023U == (0x707fU & vlSelf->top__DOT___Mem_inst)));
+    vlSelf->top__DOT__Controller__DOT___GEN_4 = (IData)(
+                                                        (0x13U 
+                                                         == 
+                                                         (0x707fU 
+                                                          & vlSelf->top__DOT___Mem_inst)));
     vlSelf->top__DOT__Controller__DOT__io_mem_rd_en_0 
         = (IData)((0x2003U == (0x707fU & vlSelf->top__DOT___Mem_inst)));
-    vlSelf->top__DOT___Controller_io_imm = ((0x23U 
+    vlSelf->top__DOT__Controller__DOT___GEN_7 = (IData)(
+                                                        (0x33U 
+                                                         == 
+                                                         (0x707fU 
+                                                          & vlSelf->top__DOT___Mem_inst)));
+    vlSelf->top__DOT___Controller_io_imm = ((0x63U 
                                              == (0x7fU 
                                                  & vlSelf->top__DOT___Mem_inst))
                                              ? (((- (IData)(
-                                                            (1U 
-                                                             & (vlSelf->top__DOT___Mem_inst 
-                                                                >> 0xbU)))) 
+                                                            (vlSelf->top__DOT___Mem_inst 
+                                                             >> 0x1fU))) 
                                                  << 0xcU) 
-                                                | ((0xfe0U 
+                                                | ((0x800U 
                                                     & (vlSelf->top__DOT___Mem_inst 
-                                                       >> 0x14U)) 
-                                                   | (0x1fU 
-                                                      & (vlSelf->top__DOT___Mem_inst 
-                                                         >> 7U))))
-                                             : ((3U 
+                                                       << 4U)) 
+                                                   | ((0x7e0U 
+                                                       & (vlSelf->top__DOT___Mem_inst 
+                                                          >> 0x14U)) 
+                                                      | (0x1eU 
+                                                         & (vlSelf->top__DOT___Mem_inst 
+                                                            >> 7U)))))
+                                             : ((0x23U 
                                                  == 
                                                  (0x7fU 
                                                   & vlSelf->top__DOT___Mem_inst))
                                                  ? 
                                                 (((- (IData)(
-                                                             (1U 
-                                                              & (vlSelf->top__DOT___Mem_inst 
-                                                                 >> 0xbU)))) 
+                                                             (vlSelf->top__DOT___Mem_inst 
+                                                              >> 0x1fU))) 
                                                   << 0xcU) 
-                                                 | (vlSelf->top__DOT___Mem_inst 
-                                                    >> 0x14U))
+                                                 | ((0xfe0U 
+                                                     & (vlSelf->top__DOT___Mem_inst 
+                                                        >> 0x14U)) 
+                                                    | (0x1fU 
+                                                       & (vlSelf->top__DOT___Mem_inst 
+                                                          >> 7U))))
                                                  : 
-                                                ((0x67U 
+                                                ((3U 
                                                   == 
                                                   (0x7fU 
                                                    & vlSelf->top__DOT___Mem_inst))
-                                                  ? vlSelf->top__DOT__Controller__DOT____VdfgTmp_h4240185c__0
+                                                  ? 
+                                                 (((- (IData)(
+                                                              (1U 
+                                                               & (vlSelf->top__DOT___Mem_inst 
+                                                                  >> 0xbU)))) 
+                                                   << 0xcU) 
+                                                  | (vlSelf->top__DOT___Mem_inst 
+                                                     >> 0x14U))
                                                   : 
-                                                 ((0x6fU 
+                                                 ((0x67U 
                                                    == 
                                                    (0x7fU 
                                                     & vlSelf->top__DOT___Mem_inst))
-                                                   ? 
-                                                  (((- (IData)(
-                                                               (vlSelf->top__DOT___Mem_inst 
-                                                                >> 0x1fU))) 
-                                                    << 0x14U) 
-                                                   | ((0xff000U 
-                                                       & vlSelf->top__DOT___Mem_inst) 
-                                                      | ((0x800U 
-                                                          & (vlSelf->top__DOT___Mem_inst 
-                                                             >> 9U)) 
-                                                         | (0x7feU 
-                                                            & (vlSelf->top__DOT___Mem_inst 
-                                                               >> 0x14U)))))
+                                                   ? vlSelf->top__DOT__Controller__DOT____VdfgTmp_h4240185c__0
                                                    : 
-                                                  ((0x37U 
+                                                  ((0x6fU 
                                                     == 
                                                     (0x7fU 
                                                      & vlSelf->top__DOT___Mem_inst))
                                                     ? 
-                                                   (0xfffff000U 
-                                                    & vlSelf->top__DOT___Mem_inst)
+                                                   (((- (IData)(
+                                                                (vlSelf->top__DOT___Mem_inst 
+                                                                 >> 0x1fU))) 
+                                                     << 0x14U) 
+                                                    | ((0xff000U 
+                                                        & vlSelf->top__DOT___Mem_inst) 
+                                                       | ((0x800U 
+                                                           & (vlSelf->top__DOT___Mem_inst 
+                                                              >> 9U)) 
+                                                          | (0x7feU 
+                                                             & (vlSelf->top__DOT___Mem_inst 
+                                                                >> 0x14U)))))
                                                     : 
-                                                   ((0x17U 
+                                                   ((0x37U 
                                                      == 
                                                      (0x7fU 
                                                       & vlSelf->top__DOT___Mem_inst))
@@ -440,89 +466,122 @@ VL_INLINE_OPT void Vtop___024root___nba_sequent__TOP__0(Vtop___024root* vlSelf) 
                                                     (0xfffff000U 
                                                      & vlSelf->top__DOT___Mem_inst)
                                                      : 
-                                                    ((0x13U 
+                                                    ((0x17U 
                                                       == 
                                                       (0x7fU 
                                                        & vlSelf->top__DOT___Mem_inst))
-                                                      ? vlSelf->top__DOT__Controller__DOT____VdfgTmp_h4240185c__0
-                                                      : 0U)))))));
-    vlSelf->top__DOT___Controller_io_jump_en = (1U 
-                                                & ((IData)(vlSelf->top__DOT__Controller__DOT___GEN_1)
-                                                    ? 
-                                                   ((~ (IData)(
-                                                               (0U 
-                                                                != vlSelf->top__DOT__Controller__DOT__alu_out))) 
-                                                    | (IData)(vlSelf->top__DOT__Controller__DOT____VdfgTmp_h4202fe99__0))
-                                                    : (IData)(vlSelf->top__DOT__Controller__DOT____VdfgTmp_h4202fe99__0)));
-    vlSelf->top__DOT___Controller_io_rf_wr_en = ((IData)(vlSelf->top__DOT__Controller__DOT__io_mem_rd_en_0) 
-                                                 | ((IData)(vlSelf->top__DOT__Controller__DOT___GEN_2) 
+                                                      ? 
+                                                     (0xfffff000U 
+                                                      & vlSelf->top__DOT___Mem_inst)
+                                                      : 
+                                                     ((0x13U 
+                                                       == 
+                                                       (0x7fU 
+                                                        & vlSelf->top__DOT___Mem_inst))
+                                                       ? vlSelf->top__DOT__Controller__DOT____VdfgTmp_h4240185c__0
+                                                       : 0U))))))));
+    vlSelf->top__DOT__Controller__DOT___GEN_2 = ((IData)(vlSelf->top__DOT__Controller__DOT___GEN_1) 
+                                                 | (IData)(vlSelf->top__DOT__Controller__DOT___GEN_0));
+    vlSelf->top__DOT__Controller__DOT____VdfgTmp_he85b024e__0 
+        = ((IData)(vlSelf->top__DOT__Controller__DOT___GEN_6) 
+           | (IData)(vlSelf->top__DOT__Controller__DOT___GEN_4));
+    vlSelf->top__DOT__Controller__DOT___GEN_5 = ((IData)(vlSelf->top__DOT__Controller__DOT___GEN_4) 
+                                                 | ((IData)(vlSelf->top__DOT__Controller__DOT__io_mem_wr_en_0) 
+                                                    | (IData)(vlSelf->top__DOT__Controller__DOT__io_mem_rd_en_0)));
+    vlSelf->top__DOT__Controller__DOT___GEN_9 = ((IData)(vlSelf->top__DOT__Controller__DOT___GEN_7) 
+                                                 & (0x20U 
+                                                    == 
+                                                    (vlSelf->top__DOT___Mem_inst 
+                                                     >> 0x19U)));
+    vlSelf->top__DOT__Controller__DOT___GEN_8 = ((IData)(vlSelf->top__DOT__Controller__DOT___GEN_7) 
+                                                 & (0U 
+                                                    == 
+                                                    (vlSelf->top__DOT___Mem_inst 
+                                                     >> 0x19U)));
+    vlSelf->top__DOT__Controller__DOT___GEN_10 = ((IData)(vlSelf->top__DOT__Controller__DOT___GEN_9) 
+                                                  | (IData)(vlSelf->top__DOT__Controller__DOT___GEN_8));
+    vlSelf->io_alu_op2 = (((IData)(vlSelf->top__DOT__Controller__DOT___GEN_10) 
+                           | ((~ ((IData)(vlSelf->top__DOT__Controller__DOT___GEN_6) 
+                                  | (IData)(vlSelf->top__DOT__Controller__DOT___GEN_5))) 
+                              & (IData)(vlSelf->top__DOT__Controller__DOT___GEN_2)))
+                           ? vlSelf->io_data : vlSelf->top__DOT___Controller_io_imm);
+    vlSelf->top__DOT__Controller__DOT____VdfgTmp_he1a9450c__0 
+        = ((IData)(vlSelf->top__DOT__Controller__DOT___GEN_10) 
+           | (IData)(vlSelf->top__DOT__Controller__DOT____VdfgTmp_he85b024e__0));
+    vlSelf->top__DOT___Controller_io_rf_wr_en = ((IData)(vlSelf->top__DOT__Controller__DOT____VdfgTmp_he1a9450c__0) 
+                                                 | ((IData)(vlSelf->top__DOT__Controller__DOT__io_mem_rd_en_0) 
                                                     | ((0x67U 
                                                         == 
                                                         (0x7fU 
                                                          & vlSelf->top__DOT___Mem_inst)) 
-                                                       | ((IData)(vlSelf->top__DOT__Controller__DOT___GEN) 
-                                                          | (0x37U 
-                                                             == 
-                                                             (0x7fU 
-                                                              & vlSelf->top__DOT___Mem_inst))))));
-    vlSelf->top__DOT__Controller__DOT___GEN_4 = ((IData)(vlSelf->top__DOT__Controller__DOT__io_mem_wr_en_0) 
-                                                 | ((IData)(vlSelf->top__DOT__Controller__DOT__io_mem_rd_en_0) 
-                                                    | (IData)(vlSelf->top__DOT__Controller__DOT___GEN_2)));
-    vlSelf->top__DOT___InputAlu_io_op2 = (((~ (IData)(vlSelf->top__DOT__Controller__DOT___GEN_4)) 
-                                           & ((IData)(vlSelf->top__DOT__Controller__DOT___GEN_1) 
-                                              & (0U 
-                                                 != vlSelf->top__DOT__Controller__DOT__alu_out)))
-                                           ? vlSelf->io_data
-                                           : vlSelf->top__DOT___Controller_io_imm);
-    vlSelf->top__DOT___InputAlu_io_op1 = (((IData)(vlSelf->top__DOT__Controller__DOT___GEN_4) 
-                                           | ((IData)(vlSelf->top__DOT__Controller__DOT___GEN_1)
-                                               ? (0U 
-                                                  != vlSelf->top__DOT__Controller__DOT__alu_out)
-                                               : (0x67U 
-                                                  == 
-                                                  (0x7fU 
-                                                   & vlSelf->top__DOT___Mem_inst))))
-                                           ? vlSelf->top__DOT__RegisterFile__DOT___GEN[
-                                          (0x1fU & 
-                                           (vlSelf->top__DOT___Mem_inst 
-                                            >> 0xfU))]
-                                           : vlSelf->top__DOT__Pc__DOT__pc);
-    vlSelf->io_addr = ((((IData)(vlSelf->top__DOT__Controller__DOT___GEN_4) 
-                         | ((~ (IData)(vlSelf->top__DOT__Controller__DOT___GEN_1)) 
-                            & ((0x67U != (0x7fU & vlSelf->top__DOT___Mem_inst)) 
-                               & (IData)(vlSelf->top__DOT__Controller__DOT___GEN))))
-                         ? (vlSelf->top__DOT___InputAlu_io_op1 
-                            + vlSelf->top__DOT___InputAlu_io_op2)
-                         : 0U) | ((((~ (IData)(vlSelf->top__DOT__Controller__DOT___GEN_4)) 
-                                    & (IData)(vlSelf->top__DOT__Controller__DOT___GEN_1))
-                                    ? (vlSelf->top__DOT___InputAlu_io_op1 
-                                       - vlSelf->top__DOT___InputAlu_io_op2)
-                                    : 0U) | ((((~ (IData)(vlSelf->top__DOT__Controller__DOT___GEN_4)) 
-                                               & ((~ (IData)(vlSelf->top__DOT__Controller__DOT___GEN_1)) 
-                                                  & ((0x67U 
-                                                      != 
-                                                      (0x7fU 
-                                                       & vlSelf->top__DOT___Mem_inst)) 
-                                                     & ((~ (IData)(vlSelf->top__DOT__Controller__DOT___GEN)) 
-                                                        & (0x37U 
+                                                       | ((0x6fU 
                                                            == 
                                                            (0x7fU 
-                                                            & vlSelf->top__DOT___Mem_inst))))))
-                                               ? vlSelf->top__DOT___InputAlu_io_op2
+                                                            & vlSelf->top__DOT___Mem_inst)) 
+                                                          | ((0x17U 
+                                                              == 
+                                                              (0x7fU 
+                                                               & vlSelf->top__DOT___Mem_inst)) 
+                                                             | (0x37U 
+                                                                == 
+                                                                (0x7fU 
+                                                                 & vlSelf->top__DOT___Mem_inst)))))));
+    vlSelf->io_alu_op1 = (((IData)(vlSelf->top__DOT__Controller__DOT____VdfgTmp_he1a9450c__0) 
+                           | ((IData)(vlSelf->top__DOT__Controller__DOT__io_mem_wr_en_0) 
+                              | ((IData)(vlSelf->top__DOT__Controller__DOT__io_mem_rd_en_0) 
+                                 | ((IData)(vlSelf->top__DOT__Controller__DOT___GEN_2) 
+                                    | (0x67U == (0x7fU 
+                                                 & vlSelf->top__DOT___Mem_inst))))))
+                           ? vlSelf->top__DOT__RegisterFile__DOT___GEN[
+                          (0x1fU & (vlSelf->top__DOT___Mem_inst 
+                                    >> 0xfU))] : vlSelf->top__DOT__Pc__DOT__pc);
+    vlSelf->__VdfgTmp_hfbd02a66__0 = (vlSelf->io_alu_op1 
+                                      == vlSelf->io_alu_op2);
+    vlSelf->top__DOT___Controller_io_jump_no_jalr = 
+        ((IData)(vlSelf->top__DOT__Controller__DOT___GEN_1)
+          ? (vlSelf->io_alu_op1 != vlSelf->io_alu_op2)
+          : ((IData)(vlSelf->top__DOT__Controller__DOT___GEN_0)
+              ? (IData)(vlSelf->__VdfgTmp_hfbd02a66__0)
+              : (0x6fU == (0x7fU & vlSelf->top__DOT___Mem_inst))));
+    vlSelf->io_addr = ((((~ (IData)(vlSelf->top__DOT__Controller__DOT___GEN_9)) 
+                         & ((IData)(vlSelf->top__DOT__Controller__DOT___GEN_8) 
+                            | ((~ (IData)(vlSelf->top__DOT__Controller__DOT___GEN_6)) 
+                               & ((IData)(vlSelf->top__DOT__Controller__DOT___GEN_5) 
+                                  | ((~ (IData)(vlSelf->top__DOT__Controller__DOT___GEN_2)) 
+                                     & (IData)(vlSelf->__VdfgTmp_h64c303f7__0))))))
+                         ? (vlSelf->io_alu_op1 + vlSelf->io_alu_op2)
+                         : 0U) | (((IData)(vlSelf->top__DOT__Controller__DOT___GEN_9)
+                                    ? (vlSelf->io_alu_op1 
+                                       - vlSelf->io_alu_op2)
+                                    : 0U) | ((((~ (IData)(vlSelf->top__DOT__Controller__DOT___GEN_9)) 
+                                               & ((~ (IData)(vlSelf->top__DOT__Controller__DOT___GEN_8)) 
+                                                  & ((~ (IData)(vlSelf->top__DOT__Controller__DOT___GEN_6)) 
+                                                     & ((~ (IData)(vlSelf->top__DOT__Controller__DOT___GEN_5)) 
+                                                        & ((~ (IData)(vlSelf->top__DOT__Controller__DOT___GEN_2)) 
+                                                           & ((~ (IData)(vlSelf->__VdfgTmp_h64c303f7__0)) 
+                                                              & (0x37U 
+                                                                 == 
+                                                                 (0x7fU 
+                                                                  & vlSelf->top__DOT___Mem_inst))))))))
+                                               ? vlSelf->io_alu_op2
                                                : 0U) 
-                                             | (((~ (IData)(vlSelf->top__DOT__Controller__DOT___GEN_4)) 
-                                                 & ((~ (IData)(vlSelf->top__DOT__Controller__DOT___GEN_1)) 
-                                                    & (0x67U 
-                                                       == 
-                                                       (0x7fU 
-                                                        & vlSelf->top__DOT___Mem_inst))))
-                                                 ? 
-                                                (vlSelf->top__DOT___InputAlu_io_op1 
-                                                 | vlSelf->top__DOT___InputAlu_io_op2)
-                                                 : 0U))));
+                                             | ((((~ (IData)(vlSelf->top__DOT__Controller__DOT___GEN_9)) 
+                                                  & ((~ (IData)(vlSelf->top__DOT__Controller__DOT___GEN_8)) 
+                                                     & (IData)(vlSelf->top__DOT__Controller__DOT___GEN_6)))
+                                                  ? 
+                                                 (vlSelf->io_alu_op1 
+                                                  < vlSelf->io_alu_op2)
+                                                  : 0U) 
+                                                | (((~ (IData)(vlSelf->top__DOT__Controller__DOT___GEN_9)) 
+                                                    & ((~ (IData)(vlSelf->top__DOT__Controller__DOT___GEN_8)) 
+                                                       & ((~ (IData)(vlSelf->top__DOT__Controller__DOT___GEN_6)) 
+                                                          & ((~ (IData)(vlSelf->top__DOT__Controller__DOT___GEN_5)) 
+                                                             & (IData)(vlSelf->top__DOT__Controller__DOT___GEN_2)))))
+                                                    ? (IData)(vlSelf->__VdfgTmp_hfbd02a66__0)
+                                                    : 0U)))));
     vlSelf->io_nextpc = vlSelf->io_addr;
-    if (VL_UNLIKELY(vlSelf->top__DOT__Controller__DOT__io_mem_rd_en_0)) {
-        VL_WRITEF("rd_en is %1#\n",1,vlSelf->top__DOT__Controller__DOT__io_mem_rd_en_0);
+    vlSelf->io_alu_out = vlSelf->io_addr;
+    if (vlSelf->top__DOT__Controller__DOT__io_mem_rd_en_0) {
         Vtop___024root____Vdpiimwrap_top__DOT__Mem__DOT__mem_read_TOP(vlSelf->io_addr, 4U, vlSelf->__Vfunc_top__DOT__Mem__DOT__mem_read__1__Vfuncout);
         vlSelf->top__DOT___Mem_dm_out = vlSelf->__Vfunc_top__DOT__Mem__DOT__mem_read__1__Vfuncout;
     } else {
@@ -531,30 +590,41 @@ VL_INLINE_OPT void Vtop___024root___nba_sequent__TOP__0(Vtop___024root* vlSelf) 
     if (vlSelf->top__DOT__Controller__DOT__io_mem_wr_en_0) {
         Vtop___024root____Vdpiimwrap_top__DOT__Mem__DOT__mem_write_TOP(vlSelf->io_addr, 4U, vlSelf->io_data);
     }
-    vlSelf->top__DOT___InputReg_io_wd = (((((IData)(vlSelf->top__DOT__Controller__DOT___GEN_2) 
-                                            | ((~ (IData)(vlSelf->top__DOT__Controller__DOT____VdfgTmp_h4202fe99__0)) 
-                                               & (0x17U 
-                                                  == 
-                                                  (0x7fU 
-                                                   & vlSelf->top__DOT___Mem_inst)))) 
-                                           | (IData)(vlSelf->top__DOT__Controller__DOT__io_mem_rd_en_0))
+    vlSelf->top__DOT___InputReg_io_wd = (((((~ (IData)(vlSelf->top__DOT__Controller__DOT___GEN_10)) 
+                                            & ((IData)(vlSelf->top__DOT__Controller__DOT____VdfgTmp_he85b024e__0) 
+                                               | ((~ (IData)(vlSelf->top__DOT__Controller__DOT__io_mem_rd_en_0)) 
+                                                  & ((~ (IData)(vlSelf->__VdfgTmp_h67d67586__0)) 
+                                                     & (0x17U 
+                                                        == 
+                                                        (0x7fU 
+                                                         & vlSelf->top__DOT___Mem_inst)))))) 
+                                           | ((IData)(vlSelf->top__DOT__Controller__DOT___GEN_10) 
+                                              | ((~ (IData)(vlSelf->top__DOT__Controller__DOT____VdfgTmp_he85b024e__0)) 
+                                                 & (IData)(vlSelf->top__DOT__Controller__DOT__io_mem_rd_en_0))))
                                            ? vlSelf->top__DOT___Mem_dm_out
                                            : 0U) | 
-                                         (((~ (IData)(vlSelf->top__DOT__Controller__DOT__io_mem_rd_en_0)) 
-                                           & ((~ (IData)(vlSelf->top__DOT__Controller__DOT___GEN_2)) 
-                                              & ((IData)(vlSelf->top__DOT__Controller__DOT____VdfgTmp_h4202fe99__0) 
-                                                 | ((0x17U 
-                                                     != 
-                                                     (0x7fU 
-                                                      & vlSelf->top__DOT___Mem_inst)) 
-                                                    & (0x37U 
-                                                       == 
-                                                       (0x7fU 
-                                                        & vlSelf->top__DOT___Mem_inst))))))
-                                           ? ((IData)(vlSelf->top__DOT___Controller_io_jump_en)
+                                         (((~ (IData)(vlSelf->top__DOT__Controller__DOT___GEN_10)) 
+                                           & ((~ (IData)(vlSelf->top__DOT__Controller__DOT____VdfgTmp_he85b024e__0)) 
+                                              & ((~ (IData)(vlSelf->top__DOT__Controller__DOT__io_mem_rd_en_0)) 
+                                                 & ((IData)(vlSelf->__VdfgTmp_h67d67586__0) 
+                                                    | ((0x17U 
+                                                        != 
+                                                        (0x7fU 
+                                                         & vlSelf->top__DOT___Mem_inst)) 
+                                                       & (0x37U 
+                                                          == 
+                                                          (0x7fU 
+                                                           & vlSelf->top__DOT___Mem_inst)))))))
+                                           ? ((0x67U 
+                                               == (0x7fU 
+                                                   & vlSelf->top__DOT___Mem_inst))
                                                ? ((IData)(4U) 
                                                   + vlSelf->top__DOT__Pc__DOT__pc)
-                                               : vlSelf->top__DOT__Pc__DOT__pc)
+                                               : ((IData)(vlSelf->top__DOT___Controller_io_jump_no_jalr)
+                                                   ? 
+                                                  ((IData)(4U) 
+                                                   + vlSelf->top__DOT__Pc__DOT__pc)
+                                                   : vlSelf->top__DOT__Pc__DOT__pc))
                                            : 0U));
 }
 
@@ -602,7 +672,7 @@ void Vtop___024root___eval(Vtop___024root* vlSelf) {
 #ifdef VL_DEBUG
                     Vtop___024root___dump_triggers__act(vlSelf);
 #endif
-                    VL_FATAL_MT("/home/wuxy/ysyx-workbench/npc/vsrc/top.v", 576, "", "Active region did not converge.");
+                    VL_FATAL_MT("/home/wuxy/ysyx-workbench/npc/vsrc/top.v", 590, "", "Active region did not converge.");
                 }
                 vlSelf->__VactIterCount = ((IData)(1U) 
                                            + vlSelf->__VactIterCount);
@@ -617,7 +687,7 @@ void Vtop___024root___eval(Vtop___024root* vlSelf) {
 #ifdef VL_DEBUG
                 Vtop___024root___dump_triggers__nba(vlSelf);
 #endif
-                VL_FATAL_MT("/home/wuxy/ysyx-workbench/npc/vsrc/top.v", 576, "", "NBA region did not converge.");
+                VL_FATAL_MT("/home/wuxy/ysyx-workbench/npc/vsrc/top.v", 590, "", "NBA region did not converge.");
             }
             __VnbaIterCount = ((IData)(1U) + __VnbaIterCount);
             Vtop___024root___eval_nba(vlSelf);

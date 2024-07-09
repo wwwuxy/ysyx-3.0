@@ -10,7 +10,7 @@
 
 
 
-int SIM_TIME = 200;         //设置仿真时间上限
+// int SIM_TIME = 10000;         //设置仿真时间上限
 
 bool nemutrap = false;
 void print_reg(Vtop *top);
@@ -52,8 +52,7 @@ int main(int argc, char** argv, char** env) {
   init_dut_reg(top);  //先把NPC的寄存器数据存放到npc_reg中，再初始化npc
   init_npc(argc, argv);
 
-   while (contextp->time() < SIM_TIME && !contextp->gotFinish()) { 
-
+   while (!contextp->gotFinish()) { 
     top->reset = 0;
     if(rst)   top->reset = 1;     //initial pc
     top->eval();
@@ -69,11 +68,14 @@ int main(int argc, char** argv, char** env) {
       npc_pc = top->io_pc;
       top->eval();
       printf("inst = %08x\n", top->io_inst);
+      printf("alu_out = %08x\n", top->io_alu_out);
+      printf("alu_op1 = %08x\n", top->io_alu_op1);
+      printf("alu_op2 = %08x\n", top->io_alu_op2);
 
 //difftest
       init_dut_reg(top);
       difftest_step();
-      
+
 
 //sdb
 
