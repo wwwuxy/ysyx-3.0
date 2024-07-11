@@ -27,7 +27,7 @@ typedef struct {
   // we treat ioaddr_t as paddr_t here
   paddr_t low;
   paddr_t high;
-  void *space;  //映射的目标空间
+  void *space; 
   io_callback_t callback;
 } IOMap;
 

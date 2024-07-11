@@ -16,15 +16,14 @@ size_t strlen(const char *s) {
 
 //注意： strcpy() 函数不会检查目标字符串的大小是否足够容纳源字符串
 char *strcpy(char *dst, const char *src) {
-  char tmp = src[0];
-  int i;
-  for(i = 0; tmp != '\0'; i++){
-    tmp = src[i];
-    dst[i] = tmp;
-  }
-  return dst;
-  // panic("Not implemented");
+    int i;
+    for (i = 0; src[i] != '\0'; i++) {
+        dst[i] = src[i];
+    }
+    dst[i] = '\0'; // 添加字符串终止符
+    return dst;
 }
+
 
 char *strncpy(char *dst, const char *src, size_t n) {
   char tmp = src[0];
@@ -50,16 +49,13 @@ char *strcat(char *dst, const char *src) {
 
 
 int strcmp(const char *s1, const char *s2) {
-  int i;
-  for(i = 0; s1[i] != '\0' && s2[i] != '\0'; i++){
-    if(s1[i] < s2[i]) return -1;
-    else if(s1[i] > s2[i]) return 1;
-  }
-  if(s1[i] == '\0' && s2[i] == '\0') return 0;
-  else if(s1[i] != '\0') return 1;
-  else return -1;
-  // panic("Not implemented");
+    while (*s1 && (*s1 == *s2)) {
+        s1++;
+        s2++;
+    }
+    return *(unsigned char *)s1 - *(unsigned char *)s2;
 }
+
 
 int strncmp(const char *s1, const char *s2, size_t n) {   //比较前n个字符
   int i;
