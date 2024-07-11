@@ -21,12 +21,13 @@
 typedef void(*io_callback_t)(uint32_t, int, bool);
 uint8_t* new_space(int size);
 
+//IO映射结构体
 typedef struct {
   const char *name;
   // we treat ioaddr_t as paddr_t here
   paddr_t low;
   paddr_t high;
-  void *space;
+  void *space;  //映射的目标空间
   io_callback_t callback;
 } IOMap;
 
@@ -38,7 +39,7 @@ static inline int find_mapid_by_addr(IOMap *maps, int size, paddr_t addr) {
   int i;
   for (i = 0; i < size; i ++) {
     if (map_inside(maps + i, addr)) {
-      difftest_skip_ref();
+      difftest_skip_ref();  //当有IO操作时，跳过对比，因为DUT和REF的设备行为可能不同
       return i;
     }
   }

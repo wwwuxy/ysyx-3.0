@@ -13,6 +13,7 @@ size_t strlen(const char *s) {
   // panic("Not implemented");
 }
 
+
 //注意： strcpy() 函数不会检查目标字符串的大小是否足够容纳源字符串
 char *strcpy(char *dst, const char *src) {
   char tmp = src[0];

@@ -45,20 +45,18 @@ void init_wp_pool() {
 
 /* TODO: Implement the functionality of watchpoint */
 
-WP* new_wp(){
-  WP * new_wp;
-  for(new_wp = free_;new_wp->next != NULL;new_wp = new_wp->next){
-    if(new_wp->used == false){
-      new_wp->used = true;
-      new_wp->next = head;  //头插
-      head = new_wp;
-    }
-    else{
-      printf("No free WP!\n");
-      assert(0);
-    }
-  }
-  return new_wp;
+WP* new_wp()
+{
+  if(free_==NULL)
+  {
+    printf("free_没有空闲监视点\n");
+    assert(0);
+  }  
+  WP *pos=free_;
+  free_++;
+  pos->next=head;
+  head=pos;
+  return pos;
 }
 
 
@@ -84,11 +82,12 @@ void display_watchpoint(){    //打印所以监视点
   if(p == NULL){
     printf("No Watchpoints Can Be Printed!\n");
   }else{
-    for(;p->next != NULL;p = p->next){
+    while(p){
       p->val = expr(p->expr,&success);
       if(success){
         printf("NO.%d:%s value is %d\n",p->NO,p->expr,p->val);
       }
+      p = p->next;
     }
   }
 }
@@ -109,7 +108,7 @@ void create_watchpoint(char* args){
     int tmp = expr(p->expr,&success);
     if(success) {
       p->val = tmp;
-      printf("Create Watchpoint No.%d .\n", p->NO);
+      printf("Create Watchpoint No.%d \n", p->NO);
     }else{
         printf("Error Expr_Compute\n");
     }

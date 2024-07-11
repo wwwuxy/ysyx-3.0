@@ -102,8 +102,8 @@ static bool make_token(char *e) {    //识别token
         char *substr_start = e + position;    //string+pmatch.rm_so 到 string+pmatch.rm_eo 就是我们匹配的字符串
         int substr_len = pmatch.rm_eo;
 
-        Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
-            i, rules[i].regex, position, substr_len, substr_len, substr_start);   //输出识别成功信息
+         Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
+             i, rules[i].regex, position, substr_len, substr_len, substr_start);   //输出识别成功信息
 
         position += substr_len;
 
@@ -380,6 +380,28 @@ word_t expr(char *e, bool *success) {
 			
 	}
   }
+
+  for(int i = 0;i<nr_token;i++){
+	if(tokens[i].type == '*'){			//引用
+		if(i == 0 || (tokens[i-1].type != TK_DATA && tokens[i-1].type != ')')){
+			char *adr = tokens[i+1].str;
+			vaddr_t add;
+			sscanf(adr,"%x",&add);		//get address
+			tmp = vaddr_read(add,4);			//read memory
+			int_char(tmp,tokens[i].str);
+			tokens[i+1].type = TK_NOTYPE;
+		}
+	}
+	for(i =0;i<NR_REGEX;i++){
+		if(tokens[i].type == TK_NOTYPE){
+			for(int j = i;j<NR_REGEX;j++){
+				tokens[j] = tokens[j+1];
+			}
+			nr_token--;
+		}
+	}
+  }
+
   for(int i = 0;i<nr_token;i++){
 	if(tokens[i].type == TK_HEX){	//16进制
 		char *adr = tokens[i].str + 2;		//去除0X
@@ -392,17 +414,8 @@ word_t expr(char *e, bool *success) {
 		tokens[i].type = TK_DATA;
 	}
   }
-  for(int i = 0;i<nr_token;i++){
-	if(tokens[i].type == '*'){			//引用
-		if(tokens[i-1].type != TK_DATA && tokens[i-1].type != ')'){
-			char *adr = tokens[i].str + 1;
-			vaddr_t add;
-			sscanf(adr,"%x",&add);		//get address
-			tmp = vaddr_read(add,4);			//read memory
-			int_char(tmp,tokens[i].str);
-		}
-	}
-  }
+
+
  
   result = eval(0,nr_token-1);
   *success = result.valid;

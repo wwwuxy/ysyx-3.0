@@ -13,6 +13,8 @@
 * See the Mulan PSL v2 for more details.
 ***************************************************************************************/
 
+
+/********************模拟内存映射IO***********************/
 #include <device/map.h>
 #include <memory/paddr.h>
 
@@ -21,18 +23,22 @@
 static IOMap maps[NR_MAP] = {};
 static int nr_map = 0;
 
+//根据物理地址addr查找对应的MMIO映射
 static IOMap* fetch_mmio_map(paddr_t addr) {
   int mapid = find_mapid_by_addr(maps, nr_map, addr);
   return (mapid == -1 ? NULL : &maps[mapid]);
 }
 
+//报告MMIO区域重叠，调用panic函数来输出错误信息并终止程序执行
 static void report_mmio_overlap(const char *name1, paddr_t l1, paddr_t r1,
     const char *name2, paddr_t l2, paddr_t r2) {
   panic("MMIO region %s@[" FMT_PADDR ", " FMT_PADDR "] is overlapped "
                "with %s@[" FMT_PADDR ", " FMT_PADDR "]", name1, l1, r1, name2, l2, r2);
 }
 
-/* device interface */
+/* device interface 
+初始化设备的内存映射I/O关系
+*/
 void add_mmio_map(const char *name, paddr_t addr, void *space, uint32_t len, io_callback_t callback) {
   assert(nr_map < NR_MAP);
   paddr_t left = addr, right = addr + len - 1;

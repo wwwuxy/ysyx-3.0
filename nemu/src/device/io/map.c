@@ -23,6 +23,7 @@
 static uint8_t *io_space = NULL;
 static uint8_t *p_space = NULL;
 
+//分配io空间
 uint8_t* new_space(int size) {
   uint8_t *p = p_space;
   // page aligned;
@@ -32,6 +33,7 @@ uint8_t* new_space(int size) {
   return p;
 }
 
+//检查映射边界
 static void check_bound(IOMap *map, paddr_t addr) {
   if (map == NULL) {
     Assert(map != NULL, "address (" FMT_PADDR ") is out of bound at pc = " FMT_WORD, addr, cpu.pc);
@@ -46,6 +48,7 @@ static void invoke_callback(io_callback_t c, paddr_t offset, int len, bool is_wr
   if (c != NULL) { c(offset, len, is_write); }
 }
 
+//映射函数 
 void init_map() {
   io_space = malloc(IO_SPACE_MAX);
   assert(io_space);
@@ -56,7 +59,7 @@ word_t map_read(paddr_t addr, int len, IOMap *map) {
   assert(len >= 1 && len <= 8);
   check_bound(map, addr);
   paddr_t offset = addr - map->low;
-  invoke_callback(map->callback, offset, len, false); // prepare data to read
+  invoke_callback(map->callback, offset, len, false); // prepare data to read，回调函数更新数据
   word_t ret = host_read(map->space + offset, len);
   return ret;
 }
@@ -66,5 +69,5 @@ void map_write(paddr_t addr, int len, word_t data, IOMap *map) {
   check_bound(map, addr);
   paddr_t offset = addr - map->low;
   host_write(map->space + offset, len, data);
-  invoke_callback(map->callback, offset, len, true);
+  invoke_callback(map->callback, offset, len, true); // prepare data to write，回调函数更新数据
 }

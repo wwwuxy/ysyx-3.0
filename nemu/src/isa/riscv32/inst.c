@@ -123,6 +123,8 @@ static int decode_exec(Decode *s) {
 
   INSTPAT("0000001 ????? ????? 000 ????? 01100 11", mul    , R, R(rd) = src1 * src2);
   INSTPAT("0000001 ????? ????? 001 ????? 01100 11", mulh   , R, R(rd) = (uint64_t)((int64_t)((int32_t)src1) * (int64_t)((int32_t)src2))>>32);//32位相乘，结果是64位，故需要进行提升类型
+  // INSTPAT("0000001 ????? ????? 010 ????? 01100 11", mulhsu , R, R(rd) = (uint64_t)((int64_t)((int32_t)src1) * (uint64_t)((uint32_t)src2))>>32);
+  // INSTPAT("0000001 ????? ????? 011 ????? 01100 11", mulhu  , R, R(rd) = (uint64_t)((int64_t)((uint32_t)src1) * (uint64_t)((uint32_t)src2))>>32);
   INSTPAT("0000001 ????? ????? 100 ????? 01100 11", div    , R, R(rd) = (sword_t)src1 / (sword_t)src2);
   INSTPAT("0000001 ????? ????? 101 ????? 01100 11", divu   , R, R(rd) = src1 / src2);
   INSTPAT("0000001 ????? ????? 110 ????? 01100 11", rem    , R, R(rd) = (sword_t)src1 % (sword_t)src2); //补码取余
@@ -136,6 +138,7 @@ static int decode_exec(Decode *s) {
   R(0) = 0; // reset $zero to 0
   
   enQuene(&ring_buffer, s->isa.inst.val);  //通过进队，记录每条执行的指令
+  // printf("inst = %08x\n",s->isa.inst.val);  //打印每条指令
   // printf("此时的尾指针是：%d\n指令是: %08x\n",ring_buffer.rear,ring_buffer.val[ring_buffer.rear]);  //打印缓冲区队列
 
   return 0;

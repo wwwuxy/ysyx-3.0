@@ -55,5 +55,6 @@ bool ioe_init() {
   return true;
 }
 
+//ioe_read()和ioe_write()都是通过抽象寄存器的编号索引到一个处理函数, 然后调用它
 void ioe_read (int reg, void *buf) { ((handler_t)lut[reg])(buf); }
 void ioe_write(int reg, void *buf) { ((handler_t)lut[reg])(buf); }

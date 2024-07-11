@@ -23,7 +23,7 @@ static void rtc_io_handler(uint32_t offset, int len, bool is_write) {
   assert(offset == 0 || offset == 4);
   if (!is_write && offset == 4) {
     uint64_t us = get_time();
-    rtc_port_base[0] = (uint32_t)us;
+    rtc_port_base[0] = (uint32_t)us;  //映射到两个32位RTC寄存器,0-3字节存储低32位，4-7字节存储高32位
     rtc_port_base[1] = us >> 32;
   }
 }
