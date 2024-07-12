@@ -194,6 +194,10 @@ config FTRACE
   bool "open_ftrace"
   default n
   
+config DTRACE
+  bool "open_dtrace"
+  default n
+  
 config DIFFTEST_REF_PATH
   string
   default "tools/qemu-diff" if DIFFTEST_REF_QEMU

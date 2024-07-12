@@ -4,11 +4,10 @@
 static uint64_t boot_time = 0;
 
 void __am_timer_init() {
-  // outl(RTC_ADDR, 0);
-  // outl(RTC_ADDR + 4, 0);
 }
 
 void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
+  
   uint32_t hi = inl(RTC_ADDR + 4);
   uint32_t lo = inl(RTC_ADDR);
   uint64_t time = ((uint64_t)hi << 32) | lo;

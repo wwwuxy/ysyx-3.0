@@ -70,40 +70,42 @@ int strncmp(const char *s1, const char *s2, size_t n) {   //比较前n个字符
 }
 
 void *memset(void *s, int c, size_t n) {
-  assert(s != NULL);
-
   void *ret = s;
 
   while(n>0){
-    *(char*)s = c;   //内存是以字节为单位存储的，故要强转成char类型
-    (char*)s++;
+    *(char*)s = (char)c;   //内存是以字节为单位存储的，故要强转成char类型
+    s = (char*)s + 1;
     n--;
   }
   return ret;
-  // panic("Not implemented");
 }
 
-void *memmove(void *dst, const void *src, size_t n) { //内存块重叠问题解决
-  assert(dst != NULL);
-  assert(src != NULL);
-  void *rst = dst;
-  if(dst < src){  //从左往右复制
-    while(n>0){
-      *(char*)src = *(char*)dst;
-      (char*)src++;
-      (char*)dst++;
-      n--;
+void *memmove(void *dst, const void *src, size_t n) { 
+    assert(dst != NULL);
+    assert(src != NULL);
+
+    char *d = (char *)dst;
+    const char *s = (const char *)src;
+    void *rst = dst;
+
+    if (d < s) {  // 从左往右复制
+        while (n > 0) {
+            *d = *s;
+            d++;
+            s++;
+            n--;
+        }
+    } else {  // 从右往左复制
+        d += n - 1;
+        s += n - 1;
+        while (n > 0) {
+            *d = *s;
+            d--;
+            s--;
+            n--;
+        }
     }
-  }else{
-    while(n>0){
-      *(char*)src = *(char*)dst;
-      (char*)src--;
-      (char*)dst--;
-      n--; 
-    }
-  }
-  return rst;
-  // panic("Not implemented");
+    return rst;
 }
 
 void *memcpy(void *out, const void *in, size_t n) {
