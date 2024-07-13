@@ -67,15 +67,15 @@ int main(int argc, char** argv, char** env) {
 
       npc_pc = top->io_pc;
       top->eval();
-      printf("inst = %08x\n", top->io_inst);
-      printf("alu_out = %08x\n", top->io_alu_out);
-      printf("alu_op1 = %08x\n", top->io_alu_op1);
-      printf("alu_op2 = %08x\n", top->io_alu_op2);
-      printf("imm = %08x\n", top->io_imm);
+      // printf("inst = %08x\n", top->io_inst);
+      // printf("alu_out = %08x\n", top->io_alu_out);
+      // printf("alu_op1 = %08x\n", top->io_alu_op1);
+      // printf("alu_op2 = %08x\n", top->io_alu_op2);
+      // printf("imm = %08x\n", top->io_imm);
 
 //difftest
-      init_dut_reg(top);
-      difftest_step();
+      // init_dut_reg(top);
+      // difftest_step();
 
 
 //sdb
@@ -93,7 +93,7 @@ int main(int argc, char** argv, char** env) {
         }
       }
     }
-    printf("\n");
+    // printf("\n");
     step_and_dump_wave(top, tfp, contextp);
         
 //for ebreak, finish simulation

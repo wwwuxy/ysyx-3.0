@@ -48,6 +48,6 @@ void init_npc(int argc, char *argv[]){
   parse_args(argc, argv);
   load_img(img_file);
 
-  init_difftest(diff_file, size);  //加载动态链接库
+  // init_difftest(diff_file, size);  //加载动态链接库
 }
 

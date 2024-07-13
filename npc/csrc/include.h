@@ -15,7 +15,7 @@ uint8_t* guest_to_host(uint32_t );
 uint32_t host_to_guest(uint8_t *);
 extern "C"{ 
 void mem_write(uint32_t , int , uint32_t );
-uint32_t mem_read(uint32_t , int );
+uint64_t mem_read(uint32_t , int );
 }
 
 typedef struct{
