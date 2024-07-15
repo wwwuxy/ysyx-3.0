@@ -73,7 +73,7 @@ int main(int argc, char** argv, char** env) {
       // printf("alu_op2 = %08x\n", top->io_alu_op2);
       // printf("imm = %08x\n", top->io_imm);
 
-//difftest
+// difftest
       // init_dut_reg(top);
       // difftest_step();
 

@@ -15,12 +15,24 @@
 
 #include <isa.h>
 
-word_t isa_raise_intr(word_t NO, vaddr_t epc) {
+word_t isa_raise_intr(word_t NO, vaddr_t epc) { //虚构的指令，用于中断处理
   /* TODO: Trigger an interrupt/exception with ``NO''.
    * Then return the address of the interrupt/exception vector.
    */
 
-  return 0;
+  cpu.csr.mcause = NO;
+  cpu.csr.mepc = epc;
+
+  uint32_t MIE = (cpu.csr.mstatus >> 3) & 1; //获取MIE的值
+  cpu.csr.mstatus &= ~(1 << 7); //将MPIE位置0
+  cpu.csr.mstatus |= (MIE << 3); //将MIE的值赋给MPIE
+  cpu.csr.mstatus &= ~(1 << 3); //将MIE位置0
+#ifdef CONFIG_ETRACE
+  printf("进入异常处理--isa_raise_intr: NO = %d, epc = 0x%x\n", NO, epc);
+#endif
+
+
+  return cpu.csr.mtvec;
 }
 
 word_t isa_query_intr() {

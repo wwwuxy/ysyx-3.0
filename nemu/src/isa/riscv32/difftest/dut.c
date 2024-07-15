@@ -20,13 +20,15 @@
 bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
   for(int i=0; i<32; i++){
     if(ref_r->gpr[i] != cpu.gpr[i]){
-      printf("Difftest wrong! currently pc is : 0x%8o",pc);
+      printf("Regs Difftest wrong! currently pc is : 0x%8o\n",pc);
+      printf("cpu.gpr[%d] is 0x%8o, but ref_r->gpr[%d] is 0x%8o\n",i,cpu.gpr[i],i,ref_r->gpr[i]);
       pc = ref_r->pc;
       return false;
     }
   }
   if(ref_r->pc != cpu.pc){
-      printf("Difftest wrong! currently pc is : 0x%8o",pc);
+      printf("PC Difftest wrong!\n");
+      printf("cpu.pc is 0x%8o, but ref_r->pc is 0x%8o\n",pc,ref_r->pc);
       pc = ref_r->pc;
       return false;
   }

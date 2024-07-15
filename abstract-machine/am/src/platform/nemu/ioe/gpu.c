@@ -15,13 +15,14 @@ void __am_gpu_init() {
 }
 
 void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
+  uint32_t screen_wh = inl(VGACTL_ADDR);
+  uint32_t h = screen_wh & 0xffff;
+  uint32_t w = screen_wh >> 16;
   *cfg = (AM_GPU_CONFIG_T) {
     .present = true, .has_accel = false,
-    .width = 0, .height = 0,
+    .width = w, .height = h,
     .vmemsz = 0
   };
-  cfg->width = (inl(VGACTL_ADDR) >> 16) & 0xffff;   //读取屏幕大小
-  cfg->height = inl(VGACTL_ADDR) & 0xffff;
 }
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
@@ -35,13 +36,14 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   uint32_t width = (inl(VGACTL_ADDR) >> 16) & 0xffff;
   for (int j = 0; j < screen_height; j++) {
     for (int i = 0; i < screen_width; i++) {
-      fb[(y + j) * width + (x + i)] = pixels[j * width + i];
+      fb[(y + j) * width + (x + i)] = pixels[j * screen_width + i];
     }
   }
   if (ctl->sync) {
     outl(SYNC_ADDR, 1); //写入同步寄存器
   }
 }
+
 
 void __am_gpu_status(AM_GPU_STATUS_T *status) { //调用同步寄存器
   status->ready = true;

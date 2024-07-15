@@ -5,7 +5,7 @@
 
 #define RTC_ADDR 0xa0000048 //RTC寄存器的地址
 #define SERIAL_ADDR 0xa00003f8  //串口寄存器的地址
-
+static uint64_t initial_time = 0;
 uint8_t mem[MEM_SIZE];  //开辟模拟内存空间
 
 uint8_t* guest_to_host(uint32_t paddr){ //将物理地址(4字节对齐)转换为模拟内存地址
@@ -18,7 +18,6 @@ uint32_t host_to_guest(uint8_t *haddr){ //将模拟内存地址转换为物理�
 
 uint64_t get_elapsed_time() {       //获取经过的时间
     struct timespec ts;
-    static uint64_t initial_time = 0;
     uint64_t current_time, t;
 
     // 如果初始时间未设置，则获取并设置初始时间
@@ -31,7 +30,6 @@ uint64_t get_elapsed_time() {       //获取经过的时间
     current_time = ts.tv_sec * 1000000 + ts.tv_nsec / 1000;
     t = current_time - initial_time; // 计算经过的时间
     return t; // 返回经过的时间
-
 }
 
 

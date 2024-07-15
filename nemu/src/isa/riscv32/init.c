@@ -30,6 +30,8 @@ static void restart() {
   /* Set the initial program counter. */
   cpu.pc = RESET_VECTOR;
 
+
+
   /* The zero register is always 0. */
   cpu.gpr[0] = 0;
 }
@@ -37,6 +39,8 @@ static void restart() {
 void init_isa() {
   /* Load built-in image. */
   memcpy(guest_to_host(RESET_VECTOR), img, sizeof(img));
+  /*for difftest init status*/
+  cpu.csr.mstatus = 0x1800;
 
   /* Initialize this virtual computer system. */
   restart();
