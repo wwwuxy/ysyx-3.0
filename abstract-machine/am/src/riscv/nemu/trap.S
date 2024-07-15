@@ -57,9 +57,13 @@ __am_asm_trap:
   or t1, t1, a0
   csrw mstatus, t1
   # finish setting 
+      
 
-  mv a0, sp //将栈上保存好的结构体，通过sp传递给__am_irq_handle的参数
-  jal __am_irq_handle
+  mv a0, sp //将该进程的上下文结构地址放到a0中
+  jal __am_irq_handle   //调用__am_irq_handle处理中断
+
+#修改sp为新进程的上下文结构，从而实现进程切换  
+  mv sp, a0
 
 #从__am_irq_handle返回后，恢复现场
   LOAD t1, OFFSET_STATUS(sp)

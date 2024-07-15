@@ -13,7 +13,7 @@ Context* __am_irq_handle(Context *c) {
       default: ev.event = EVENT_ERROR; break;
     }
 
-    c = user_handler(ev, c);
+    c = user_handler(ev, c);  //调用用户提供的事件处理函数
     assert(c != NULL);
   }
 
@@ -36,7 +36,13 @@ bool cte_init(Context*(*handler)(Event, Context*)) {
 }
 
 Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
-  return NULL;
+  Context *c = kstack.end - sizeof(Context);
+  c->gpr[10] = (uintptr_t)arg;
+  c->mcause = EVENT_YIELD;
+  c->mstatus = 0x1800;
+  c->mepc = (uintptr_t)entry;
+  c->pdir = NULL;
+  return c;
 }
 
 //用于进行自陷操作, 会触发一个编号为EVENT_YIELD事件
