@@ -56,10 +56,12 @@ __am_asm_trap:
   li a0, (1 << 17)
   or t1, t1, a0
   csrw mstatus, t1
+  # finish setting 
 
-  mv a0, sp
+  mv a0, sp //将栈上保存好的结构体，通过sp传递给__am_irq_handle的参数
   jal __am_irq_handle
 
+#从__am_irq_handle返回后，恢复现场
   LOAD t1, OFFSET_STATUS(sp)
   LOAD t2, OFFSET_EPC(sp)
   csrw mstatus, t1
