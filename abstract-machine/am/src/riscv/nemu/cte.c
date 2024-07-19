@@ -35,6 +35,8 @@ bool cte_init(Context*(*handler)(Event, Context*)) {
   return true;
 }
 
+
+//创建内核线程的上下文
 Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
   Context *c = kstack.end - sizeof(Context);
   c->gpr[10] = (uintptr_t)arg;
