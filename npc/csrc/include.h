@@ -18,9 +18,18 @@ void mem_write(uint32_t , int , uint32_t );
 uint64_t mem_read(uint32_t , int );
 }
 
+typedef struct {
+  uint32_t mstatus;   // 定义CSRs寄存器
+  uint32_t mcause;
+  uint32_t mtvec;
+  uint32_t mepc;
+  uint32_t mscratch;
+}CSRs;
+
 typedef struct{
     uint32_t gpr[32];
     uint32_t pc;
+    CSRs csr;
 } CPU_state;
 
 CPU_state get_cpu_state(uint32_t *, uint32_t );

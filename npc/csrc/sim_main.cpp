@@ -47,10 +47,9 @@ int main(int argc, char** argv, char** env) {
   top->trace(tfp, 0); //这一行将顶层模块 top 的信号连接到波形文件生成器 tfp 上, 0 表示要跟踪的层次深度
   tfp->open("wave.vcd"); //设置输出文件wave.vcd到当前文件夹
  
-//初始化npc
-  
-  init_dut_reg(top);  //先把NPC的寄存器数据存放到npc_reg中，再初始化npc
+//初始化npc 
   init_npc(argc, argv);
+  init_dut_reg(top);  //先把NPC的寄存器数据存放到npc_reg中，再初始化npc 
 
    while (!contextp->gotFinish()) { 
     top->reset = 0;
@@ -65,9 +64,12 @@ int main(int argc, char** argv, char** env) {
       rst = false;
       top->eval();
 
+
       npc_pc = top->io_pc;
       top->eval();
-      // printf("inst = %08x\n", top->io_inst);
+
+      // printf("inst = %08x\t pc = %08x\t", top->io_inst, top->io_pc);
+      // printf("nextpc = %08x\n", top->io_nextpc);
       // printf("alu_out = %08x\n", top->io_alu_out);
       // printf("alu_op1 = %08x\n", top->io_alu_op1);
       // printf("alu_op2 = %08x\n", top->io_alu_op2);
@@ -84,6 +86,7 @@ int main(int argc, char** argv, char** env) {
         char c = getchar();
         sdb(&c, top);
       }
+
       // ftrace(top);
       
       if(top->io_inst == 0x00100073){  //ebreak

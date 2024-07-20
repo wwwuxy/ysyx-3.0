@@ -17,6 +17,7 @@ static int parse_args(int argc, char *argv[]){
     switch(o){
       case 'i': img_file = optarg; break;
       case 'd': diff_file = optarg; break;
+      default: printf("fault option\n"); assert(0);
     }
   }
   return 0;
@@ -48,6 +49,6 @@ void init_npc(int argc, char *argv[]){
   parse_args(argc, argv);
   load_img(img_file);
 
-  // init_difftest(diff_file, size);  //加载动态链接库
+  init_difftest(diff_file, size);  //加载动态链接库
 }
 

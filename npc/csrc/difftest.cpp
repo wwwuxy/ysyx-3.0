@@ -27,7 +27,7 @@ void init_difftest(char *ref_so_file, long img_size) {
     ref_difftest_exec = (void(*)(uint64_t ))dlsym(handle, "difftest_exec");
     assert(ref_difftest_exec);
 
-    // ref_difftest_raise_intr = dlsym(handle, "difftest_raise_intr");   中断在后续实现
+    // ref_difftest_raise_intr = (void(*)(uint64_t ))dlsym(handle, "difftest_raise_intr");   //中断在后续实现
     // assert(ref_difftest_raise_intr);
 
     ref_difftest_init = (void(*)())dlsym(handle, "difftest_init");
@@ -53,20 +53,17 @@ static void checkregs(CPU_state ref, CPU_state dut){
 void difftest_step( ){
     CPU_state ref_r, dut;
 
-    // dut = get_cpu_state(npc_reg, MEM_START);
-    // if (ref_r.pc == dut.pc) {
-    //     checkregs(ref_r, dut);
-    //     return;
-    // }
-
-    
-
-    ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);    //读出将nemu中运行后的寄存器值
+    ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);    //读出nemu中运行后的寄存器值
+    // printf("read_ref_r.pc = %08x\n", ref_r.pc);
+    // print_reg(ref_r);
     dut = get_cpu_state(npc_reg, npc_pc);
+    // printf("read_dut.pc = %08x\n", dut.pc);
+    // print_reg(dut);
     checkregs(ref_r, dut);  //对比npc和dut(此时放的是nemu中正确的运行结果)，检查是否相同
     // printf("difftest_step done\n");
-    
+    // printf("\n");
+    // printf("check done\n");
     ref_difftest_exec(1);
-
+    // printf("exec done\n");
     return;
 }    
