@@ -39,10 +39,6 @@ vaddr_t *csr_regs(word_t imm){
 
 void mert(){
   word_t MPIE = cpu.csr.mstatus >> 7 & 1;
-  // cpu.csr.mstatus &= ~(1 << 12);  //设置MPP为特权级
-  // cpu.csr.mstatus |= (1 << 12);  //
-  // cpu.csr.mstatus &= ~(1 << 11);
-  // cpu.csr.mstatus |= (1 << 11);
   cpu.csr.mstatus &= ~(1 << 3);
   cpu.csr.mstatus |= (MPIE << 3);
 
@@ -163,7 +159,7 @@ static int decode_exec(Decode *s) {
   INSTPAT("??????? ????? ????? 011 ????? 11100 11", csrrc  , I, R(rd) = CSR(imm); CSR(imm) &= ~src1); //csr read and clear
 
   INSTPAT("0011000 00010 00000 000 00000 11100 11", mret   , R, s->dnpc = cpu.csr.mepc; mert()); //machine return
-  INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall  , I, bool success = true; s->dnpc = isa_raise_intr(isa_reg_str2val("$a7", &success), s->pc));
+  INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall  , I, s->dnpc = isa_raise_intr(11, s->pc));
   INSTPAT("0000000 00001 00000 000 00000 11100 11", ebreak , N, NEMUTRAP(s->pc, R(10))); //environment break - R(10) is $a0 
 
 

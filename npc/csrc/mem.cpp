@@ -40,9 +40,11 @@ extern "C" void mem_write(uint32_t paddr, int len, uint32_t data){ //写入内�
 
     // uint32_t aligned_paddr = paddr & ~0x3; //对齐到4字节
     if(paddr == SERIAL_ADDR){ //如果是串口寄存器
+        difftest_skip_ref(2);
         for (int i = 0; i < len; i++) {
             putchar((data >> (i * 8)) & 0xFF); // 输出每个字节
         }
+        // putchar(data); //输出字符
         return;
     }
 
@@ -64,6 +66,7 @@ extern "C" uint64_t mem_read(uint32_t paddr, int len){ //读取内存
 
     // uint32_t aligned_paddr = paddr & ~0x3; //对齐到4字节
     if(paddr == RTC_ADDR){ //如果是RTC寄存器
+        difftest_skip_ref(2); 
         return get_elapsed_time(); //返回经过的时间
     }
 

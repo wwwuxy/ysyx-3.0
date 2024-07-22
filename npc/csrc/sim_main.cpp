@@ -67,10 +67,13 @@ int main(int argc, char** argv, char** env) {
 
       npc_pc = top->io_pc;
       top->eval();
-
+      // printf("mstatus = %08x\n", top->rootp->top__DOT__idu__DOT__RegisterFile__DOT__CsrReg_0);
+      // printf("mtevc = %08x\n", top->rootp->top__DOT__idu__DOT__RegisterFile__DOT__CsrReg_1);
+      // printf("mcasue = %08x\n", top->rootp->top__DOT__idu__DOT__RegisterFile__DOT__CsrReg_3);
+      // printf("mepc = %08x\n", top->rootp->top__DOT__idu__DOT__RegisterFile__DOT__CsrReg_2);
       // printf("inst = %08x\t pc = %08x\t", top->io_inst, top->io_pc);
-      // printf("nextpc = %08x\n", top->io_nextpc);
-      // printf("alu_out = %08x\n", top->io_alu_out);
+      // printf("alu_rsl = %08x\n", top->io_alu_rsl);
+      // // printf("alu_out = %08x\n", top->io_alu_out);
       // printf("alu_op1 = %08x\n", top->io_alu_op1);
       // printf("alu_op2 = %08x\n", top->io_alu_op2);
       // printf("imm = %08x\n", top->io_imm);
@@ -91,7 +94,7 @@ int main(int argc, char** argv, char** env) {
       
       if(top->io_inst == 0x00100073){  //ebreak
         nemutrap = true;
-        if(top->rootp->top__DOT__RegisterFile__DOT___GEN[10] == 0){  //读取a0寄存器的值
+        if(top->rootp->top__DOT__idu__DOT__RegisterFile__DOT___GEN[10]== 0){  //读取a0寄存器的值
           printf("\033[;36mHIT GOOD TRAP!\033[0m\n"); //修改字体颜色
         }
       }
@@ -101,7 +104,6 @@ int main(int argc, char** argv, char** env) {
         
 //for ebreak, finish simulation
     if(nemutrap) {
-      // SIM_TIME = contextp->time() + 1;  //for ebreak, finish simulation
       break;
     }
    }
@@ -112,6 +114,11 @@ int main(int argc, char** argv, char** env) {
 }
 
 //exit
+      // printf("mstatus = %08x\n", top->rootp->top__DOT__idu__DOT__RegisterFile__DOT__CsrReg_0);
+      // printf("mtevc = %08x\n", top->rootp->top__DOT__idu__DOT__RegisterFile__DOT__CsrReg_1);
+      // printf("mcasue = %08x\n", top->rootp->top__DOT__idu__DOT__RegisterFile__DOT__CsrReg_3);
+      // printf("mepc = %08x\n", top->rootp->top__DOT__idu__DOT__RegisterFile__DOT__CsrReg_2);
+
   step_and_dump_wave(top, tfp, contextp);
   delete top;
   tfp->close();
@@ -123,7 +130,7 @@ int main(int argc, char** argv, char** env) {
 // for sdb 
 void print_reg(Vtop *top){
   for(int i=0; i<32; i++){
-    printf("x[%d] = 0x%08x\n", i, top->rootp->top__DOT__RegisterFile__DOT___GEN[i]);
+    printf("x[%d] = 0x%08x\n", i, top->rootp->top__DOT__idu__DOT__RegisterFile__DOT___GEN[i]);
   }
 }
 
@@ -162,9 +169,9 @@ void ftrace(Vtop *top){
   int opcode = 0x0000007f;
   if((top->io_inst & opcode) == 0x0000006f || (top->io_inst & opcode) == 0x00000067 && top->io_inst != 0x00008067){
     top->eval();
-    printf("pc = %x, inst = %08x\t [call %08x]\n", top->io_pc, top->io_inst, top->io_nextpc);
+    printf("pc = %x, inst = %08x\t [call %08x]\n", top->io_pc, top->io_inst, top->io_alu_rsl);
   }else if(top->io_inst == 0x00008067){
-    printf("pc = %x, inst = %08x\t [ret  %08x]\n", top->io_pc, top->io_inst, top->rootp->top__DOT__RegisterFile__DOT___GEN[1]);
+    printf("pc = %x, inst = %08x\t [ret  %08x]\n", top->io_pc, top->io_inst, top->rootp->top__DOT__idu__DOT__RegisterFile__DOT___GEN[1]);
   }else{
     return;
   }
@@ -173,6 +180,6 @@ void ftrace(Vtop *top){
 // for difftest
 void init_dut_reg(Vtop *top){   //把NPC的寄存器数据存放到npc_reg中
     for(int i=0; i<32; i++){
-        npc_reg[i] = top->rootp->top__DOT__RegisterFile__DOT___GEN[i];
+        npc_reg[i] = top->rootp->top__DOT__idu__DOT__RegisterFile__DOT___GEN[i];
     }
 }

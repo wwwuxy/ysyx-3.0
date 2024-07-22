@@ -14,15 +14,9 @@ Vtop::Vtop(VerilatedContext* _vcontextp__, const char* _vcname__)
     , vlSymsp{new Vtop__Syms(contextp(), _vcname__, this)}
     , clock{vlSymsp->TOP.clock}
     , reset{vlSymsp->TOP.reset}
-    , io_inst{vlSymsp->TOP.io_inst}
     , io_pc{vlSymsp->TOP.io_pc}
-    , io_addr{vlSymsp->TOP.io_addr}
-    , io_data{vlSymsp->TOP.io_data}
-    , io_nextpc{vlSymsp->TOP.io_nextpc}
-    , io_alu_out{vlSymsp->TOP.io_alu_out}
-    , io_alu_op1{vlSymsp->TOP.io_alu_op1}
-    , io_alu_op2{vlSymsp->TOP.io_alu_op2}
-    , io_imm{vlSymsp->TOP.io_imm}
+    , io_alu_rsl{vlSymsp->TOP.io_alu_rsl}
+    , io_inst{vlSymsp->TOP.io_inst}
     , rootp{&(vlSymsp->TOP)}
 {
     // Register model with the context
