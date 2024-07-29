@@ -58,6 +58,7 @@ int main(int argc, char** argv, char** env) {
 
     if(contextp->time() % 2 == 0){
       top->clock = 0;
+      top->eval();
     }
     if(contextp->time() % 2 == 1){
       top->clock = 1;
@@ -67,21 +68,32 @@ int main(int argc, char** argv, char** env) {
 
       npc_pc = top->io_pc;
       top->eval();
-      // printf("mstatus = %08x\n", top->rootp->top__DOT__idu__DOT__RegisterFile__DOT__CsrReg_0);
-      // printf("mtevc = %08x\n", top->rootp->top__DOT__idu__DOT__RegisterFile__DOT__CsrReg_1);
-      // printf("mcasue = %08x\n", top->rootp->top__DOT__idu__DOT__RegisterFile__DOT__CsrReg_3);
-      // printf("mepc = %08x\n", top->rootp->top__DOT__idu__DOT__RegisterFile__DOT__CsrReg_2);
-      // printf("inst = %08x\t pc = %08x\t", top->io_inst, top->io_pc);
+
+      // printf("wbu_valid = %d\n", top->io_wbu_valid);
+      // printf("inst = %08x\t pc = %08x\n", top->io_inst, top->io_pc);
       // printf("alu_rsl = %08x\n", top->io_alu_rsl);
       // // printf("alu_out = %08x\n", top->io_alu_out);
       // printf("alu_op1 = %08x\n", top->io_alu_op1);
       // printf("alu_op2 = %08x\n", top->io_alu_op2);
       // printf("imm = %08x\n", top->io_imm);
+      
 
 // difftest
-      // init_dut_reg(top);
-      // difftest_step();
-
+      if(top->io_diff_test){
+        // printf("npc_pc = %08x\n", npc_pc);
+        // printf("a0 = %08x\n", top->rootp->top__DOT__idu__DOT__RegisterFile__DOT___GEN[10]);
+        // // printf("alu_out = %08x\n", top->io_alu_rsl);
+        // printf("imm = %08x\n", top->io_imm);
+        // print_reg(top);
+        // printf("\n");
+        // ftrace(top);
+        
+        if(top->reset == 1){  //跳出初始化的比较
+          difftest_skip();
+        }
+        init_dut_reg(top);
+        difftest_step();
+      }
 
 //sdb
 
@@ -90,7 +102,6 @@ int main(int argc, char** argv, char** env) {
         sdb(&c, top);
       }
 
-      // ftrace(top);
       
       if(top->io_inst == 0x00100073){  //ebreak
         nemutrap = true;
@@ -101,6 +112,7 @@ int main(int argc, char** argv, char** env) {
     }
     // printf("\n");
     step_and_dump_wave(top, tfp, contextp);
+    // printf("clock = %d\n", top->clock);
         
 //for ebreak, finish simulation
     if(nemutrap) {
@@ -114,10 +126,6 @@ int main(int argc, char** argv, char** env) {
 }
 
 //exit
-      // printf("mstatus = %08x\n", top->rootp->top__DOT__idu__DOT__RegisterFile__DOT__CsrReg_0);
-      // printf("mtevc = %08x\n", top->rootp->top__DOT__idu__DOT__RegisterFile__DOT__CsrReg_1);
-      // printf("mcasue = %08x\n", top->rootp->top__DOT__idu__DOT__RegisterFile__DOT__CsrReg_3);
-      // printf("mepc = %08x\n", top->rootp->top__DOT__idu__DOT__RegisterFile__DOT__CsrReg_2);
 
   step_and_dump_wave(top, tfp, contextp);
   delete top;

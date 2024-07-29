@@ -10,11 +10,15 @@ void (*ref_difftest_raise_intr)(uint64_t NO) = NULL;
 extern uint32_t npc_reg[32];
 extern uint32_t npc_pc;
 int nr_skip = 0;
+bool skip = false;
 
 void difftest_skip_ref(int n) {
     nr_skip = n;
 }
 
+void difftest_skip() {
+    skip = true;
+}
 
 void init_difftest(char *ref_so_file, long img_size) {
     assert(ref_so_file != NULL);
@@ -63,15 +67,19 @@ void difftest_step( ){
         ref_r = get_cpu_state(npc_reg, npc_pc);
         ref_difftest_regcpy(&ref_r, DIFFTEST_TO_REF);
         nr_skip --;
-        if(nr_skip == 0){
-            ref_difftest_exec(1);
-        }
         return;
     }
 
+    if(skip = true){
+        skip = false;
+        return;
+    }
+    
     dut = get_cpu_state(npc_reg, npc_pc);
+    ref_difftest_exec(1);
     ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);    //读出nemu中运行后的寄存器值
     checkregs(ref_r, dut);  //对比npc和dut(此时放的是nemu中正确的运行结果)，检查是否相同
-    ref_difftest_exec(1);
+    
+    printf("end difftest_step\n");
     return;
 }    

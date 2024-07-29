@@ -22,8 +22,8 @@ VL_INLINE_OPT void Vtop___024root____Vdpiimwrap_top__DOT__ifu__DOT__imem__DOT__m
     mem_read__Vfuncrtn = mem_read__Vfuncrtn__Vcvt;
 }
 
-VL_INLINE_OPT void Vtop___024root____Vdpiimwrap_top__DOT__idu__DOT__Dmem__DOT__mem_read_TOP(IData/*31:0*/ addr, IData/*31:0*/ len, IData/*31:0*/ &mem_read__Vfuncrtn) {
-    VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root____Vdpiimwrap_top__DOT__idu__DOT__Dmem__DOT__mem_read_TOP\n"); );
+VL_INLINE_OPT void Vtop___024root____Vdpiimwrap_top__DOT__isu__DOT__Dmem__DOT__mem_read_TOP(IData/*31:0*/ addr, IData/*31:0*/ len, IData/*31:0*/ &mem_read__Vfuncrtn) {
+    VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root____Vdpiimwrap_top__DOT__isu__DOT__Dmem__DOT__mem_read_TOP\n"); );
     // Body
     int addr__Vcvt;
     for (size_t addr__Vidx = 0; addr__Vidx < 1; ++addr__Vidx) addr__Vcvt = addr;
@@ -36,8 +36,8 @@ VL_INLINE_OPT void Vtop___024root____Vdpiimwrap_top__DOT__idu__DOT__Dmem__DOT__m
 
 extern "C" void mem_write(int addr, int len, int data);
 
-VL_INLINE_OPT void Vtop___024root____Vdpiimwrap_top__DOT__idu__DOT__Dmem__DOT__mem_write_TOP(IData/*31:0*/ addr, IData/*31:0*/ len, IData/*31:0*/ data) {
-    VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root____Vdpiimwrap_top__DOT__idu__DOT__Dmem__DOT__mem_write_TOP\n"); );
+VL_INLINE_OPT void Vtop___024root____Vdpiimwrap_top__DOT__isu__DOT__Dmem__DOT__mem_write_TOP(IData/*31:0*/ addr, IData/*31:0*/ len, IData/*31:0*/ data) {
+    VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root____Vdpiimwrap_top__DOT__isu__DOT__Dmem__DOT__mem_write_TOP\n"); );
     // Body
     int addr__Vcvt;
     for (size_t addr__Vidx = 0; addr__Vidx < 1; ++addr__Vidx) addr__Vcvt = addr;

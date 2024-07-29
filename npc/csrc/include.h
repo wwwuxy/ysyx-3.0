@@ -38,3 +38,4 @@ void print_reg(CPU_state );
 void init_difftest(char *ref_so_file, long img_size);
 void difftest_step( );
 void difftest_skip_ref(int n);
+void difftest_skip();
