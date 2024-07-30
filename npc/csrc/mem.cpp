@@ -5,6 +5,7 @@
 
 #define RTC_ADDR 0xa0000048 //RTC寄存器的地址
 #define SERIAL_ADDR 0xa00003f8  //串口寄存器的地址
+// #define mtrace 1
 
 static uint64_t initial_time = 0;
 uint8_t mem[MEM_SIZE];  //开辟模拟内存空间
@@ -27,7 +28,7 @@ uint64_t get_elapsed_time() {       //获取经过的时间
         initial_time = ts.tv_sec * 1000000 + ts.tv_nsec / 1000;// 转换为微秒
     }
 
-    clock_gettime(CLOCK_REALTIME, &ts);  
+    clock_gettime(CLOCK_REALTIME, &ts);
     current_time = ts.tv_sec * 1000000 + ts.tv_nsec / 1000;
     t = current_time - initial_time; // 计算经过的时间
     return t; // 返回经过的时间
@@ -40,11 +41,13 @@ extern "C" void mem_write(uint32_t paddr, int len, uint32_t data){ //写入内�
 
     // uint32_t aligned_paddr = paddr & ~0x3; //对齐到4字节
     if(paddr == SERIAL_ADDR){ //如果是串口寄存器
-        difftest_skip_ref(2);
-        for (int i = 0; i < len; i++) {
-            putchar((data >> (i * 8)) & 0xFF); // 输出每个字节
+        difftest_skip_ref(1);
+        switch(len){
+            case 1: putchar(data); fflush(stdout);break; //写入1字节
+            case 2: putchar(data); putchar(data >> 8); fflush(stdout);break; //写入2字节
+            case 3: putchar(data); putchar(data >> 8); putchar(data >> 16); fflush(stdout);break; //写入3字节
+            case 4: putchar(data); putchar(data >> 8); putchar(data >> 16); putchar(data >> 24); fflush(stdout);break; //写入4字节
         }
-        // putchar(data); //输出字符
         return;
     }
 
@@ -61,9 +64,9 @@ extern "C" void mem_write(uint32_t paddr, int len, uint32_t data){ //写入内�
 };
 
 extern "C" uint64_t mem_read(uint32_t paddr, int len){ //读取内存
-//mtrace
-    // printf("mem_read: paddr = 0x%08x, len = %d\t\n", paddr, len);
-
+#ifdef mtrace
+    printf("mem_read: paddr = 0x%08x, len = %d\t\n", paddr, len);
+#endif
     // uint32_t aligned_paddr = paddr & ~0x3; //对齐到4字节
     if(paddr == RTC_ADDR){ //如果是RTC寄存器
         difftest_skip_ref(2); 
@@ -74,7 +77,10 @@ extern "C" uint64_t mem_read(uint32_t paddr, int len){ //读取内存
 
 
     uint8_t *haddr = (uint8_t *)guest_to_host(paddr); //将物理地址转换为模拟内存地址
-    // printf("mem_read: data = 0x%08x\n", *(u_int32_t *)haddr);
+#ifdef mtrace
+    printf("mem_read: data = 0x%08x\n", *(u_int32_t *)haddr);
+    printf("\n");
+#endif   
     switch(len){
         case 1: return *(uint8_t *)haddr; //读取1字节
         case 2: return *(uint16_t *)haddr; //读取2字节

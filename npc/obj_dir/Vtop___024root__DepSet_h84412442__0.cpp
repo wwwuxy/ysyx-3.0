@@ -8,22 +8,10 @@
 #include "Vtop__Syms.h"
 #include "Vtop___024root.h"
 
-extern "C" int mem_read(int pc, int len);
+extern "C" int mem_read(int addr, int len);
 
-VL_INLINE_OPT void Vtop___024root____Vdpiimwrap_top__DOT__ifu__DOT__imem__DOT__mem_read_TOP(IData/*31:0*/ pc, IData/*31:0*/ len, IData/*31:0*/ &mem_read__Vfuncrtn) {
-    VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root____Vdpiimwrap_top__DOT__ifu__DOT__imem__DOT__mem_read_TOP\n"); );
-    // Body
-    int pc__Vcvt;
-    for (size_t pc__Vidx = 0; pc__Vidx < 1; ++pc__Vidx) pc__Vcvt = pc;
-    int len__Vcvt;
-    for (size_t len__Vidx = 0; len__Vidx < 1; ++len__Vidx) len__Vcvt = len;
-    int mem_read__Vfuncrtn__Vcvt;
-    mem_read__Vfuncrtn__Vcvt = mem_read(pc__Vcvt, len__Vcvt);
-    mem_read__Vfuncrtn = mem_read__Vfuncrtn__Vcvt;
-}
-
-VL_INLINE_OPT void Vtop___024root____Vdpiimwrap_top__DOT__isu__DOT__Dmem__DOT__mem_read_TOP(IData/*31:0*/ addr, IData/*31:0*/ len, IData/*31:0*/ &mem_read__Vfuncrtn) {
-    VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root____Vdpiimwrap_top__DOT__isu__DOT__Dmem__DOT__mem_read_TOP\n"); );
+VL_INLINE_OPT void Vtop___024root____Vdpiimwrap_top__DOT__axi__DOT__Mem__DOT__mem_read_TOP(IData/*31:0*/ addr, IData/*31:0*/ len, IData/*31:0*/ &mem_read__Vfuncrtn) {
+    VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root____Vdpiimwrap_top__DOT__axi__DOT__Mem__DOT__mem_read_TOP\n"); );
     // Body
     int addr__Vcvt;
     for (size_t addr__Vidx = 0; addr__Vidx < 1; ++addr__Vidx) addr__Vcvt = addr;
@@ -36,8 +24,8 @@ VL_INLINE_OPT void Vtop___024root____Vdpiimwrap_top__DOT__isu__DOT__Dmem__DOT__m
 
 extern "C" void mem_write(int addr, int len, int data);
 
-VL_INLINE_OPT void Vtop___024root____Vdpiimwrap_top__DOT__isu__DOT__Dmem__DOT__mem_write_TOP(IData/*31:0*/ addr, IData/*31:0*/ len, IData/*31:0*/ data) {
-    VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root____Vdpiimwrap_top__DOT__isu__DOT__Dmem__DOT__mem_write_TOP\n"); );
+VL_INLINE_OPT void Vtop___024root____Vdpiimwrap_top__DOT__axi__DOT__Mem__DOT__mem_write_TOP(IData/*31:0*/ addr, IData/*31:0*/ len, IData/*31:0*/ data) {
+    VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root____Vdpiimwrap_top__DOT__axi__DOT__Mem__DOT__mem_write_TOP\n"); );
     // Body
     int addr__Vcvt;
     for (size_t addr__Vidx = 0; addr__Vidx < 1; ++addr__Vidx) addr__Vcvt = addr;
