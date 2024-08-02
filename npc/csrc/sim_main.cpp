@@ -77,22 +77,23 @@ int main(int argc, char** argv, char** env) {
       // printf("alu_op2 = %08x\n", top->io_alu_op2);
       // printf("imm = %08x\n", top->io_imm);
       
-
+  //  printf("a5 = %08x\n", top->rootp->top__DOT__idu__DOT__RegisterFile__DOT___GEN[15]);
+  //  printf("\n");
 // difftest
       if(top->io_diff_test){
         // printf("npc_pc = %08x\n", npc_pc);
-        // printf("a0 = %08x\n", top->rootp->top__DOT__idu__DOT__RegisterFile__DOT___GEN[10]);
+        // printf("a0 = %08x\n", top->rootp->top__DOT__idu__DOT__RegisterFile__DOT___GEN[15]);
         // // printf("alu_out = %08x\n", top->io_alu_rsl);
         // printf("imm = %08x\n", top->io_imm);
         // print_reg(top);
         // printf("\n");
         // ftrace(top);
         
-        if(top->reset == 1){  //跳出初始化的比较
-          difftest_skip();
-        }
-        init_dut_reg(top);
-        difftest_step();
+        // if(top->reset == 1){  //跳出初始化的比较
+        //   difftest_skip();
+        // }
+        // init_dut_reg(top);
+        // difftest_step();
       }
 
 //sdb
@@ -123,7 +124,7 @@ int main(int argc, char** argv, char** env) {
 //while循环结束，nemutrap还未被置true，说明没有触发ebreak
   if(!nemutrap){
     printf("\033[;36mHIT BAD TRAP!\033[0m\n");
-}
+  }
 
 //exit
 

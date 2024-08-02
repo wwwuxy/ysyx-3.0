@@ -69,7 +69,7 @@ extern "C" uint64_t mem_read(uint32_t paddr, int len){ //读取内存
 #endif
     // uint32_t aligned_paddr = paddr & ~0x3; //对齐到4字节
     if(paddr == RTC_ADDR){ //如果是RTC寄存器
-        difftest_skip_ref(2); 
+        difftest_skip_ref(1); 
         return get_elapsed_time(); //返回经过的时间
     }
 
