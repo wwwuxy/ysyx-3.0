@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <assert.h>
-#include "../obj_dir/Vtop___024root.h"  //存放模块的各种输入输出信号和内部状态变量
+#include "../obj_dir/VysyxSoCFull___024root.h"  //存放模块的各种输入输出信号和内部状态变量
 
 #define MEM_START  0x80000000
 #define MEM_END 0x87ffffff

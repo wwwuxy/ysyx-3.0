@@ -16,7 +16,7 @@ void putch(char ch) {
 }
 
 void halt(int code) {
-  nemu_trap(code);
+  nemu_trap(code);  //通过内联汇编增加 mv a0 0; ebreak 指令 --> 软硬协同用ebreak表示结束
 
   // should not reach here
   while (1);
