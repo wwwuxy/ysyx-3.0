@@ -9,7 +9,9 @@
 #include <svdpi.h> // 包含SystemVerilog DPI头文件,实现verilog与c的双向通信
 
 
-// int SIM_TIME = 10000;         //设置仿真时间上限
+// int SIM_TIME = 10000;
+#define RET  25   //soc的ret延迟二十个周期
+int ret_num = 0;
 
 bool nemutrap = false;
 // void print_reg(VysyxSoCFull *top);
@@ -24,11 +26,12 @@ extern uint32_t npc_reg[32];
 extern uint32_t npc_pc;
 
 extern "C" void flash_read(int32_t addr, int32_t *data) { assert(0); }
+void initialize_mem_with_ebreak();
 
 extern "C" void mrom_read(int32_t addr, int32_t *data) { 
   uint8_t *haddr = (uint8_t *)guest_to_host(addr);
   *data = *(uint32_t *)haddr;
-  printf("inst = %08x\n", *data);
+  // printf("mrom_read: addr = 0x%08x, data = 0x%08x\n", addr, *data);
   return;
   assert(0); 
   }
@@ -60,7 +63,7 @@ int main(int argc, char** argv, char** env) {
   tfp->open("wave.vcd"); //设置输出文件wave.vcd到当前文件夹
  
 //初始化npc 
-  // init_npc(argc, argv);
+  init_npc(argc, argv);
   // init_dut_reg(top);  //先把NPC的寄存器数据存放到npc_reg中，再初始化npc 
 
    while (!contextp->gotFinish()) { 
@@ -74,7 +77,12 @@ int main(int argc, char** argv, char** env) {
     }
     if(contextp->time() % 2 == 1){
       top->clock = 1;
-      rst = false;
+      if(rst){
+        if(ret_num > RET){
+        rst = false;
+        }
+        ret_num++;
+      }
       top->eval();}
 
 

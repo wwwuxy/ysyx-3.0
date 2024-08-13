@@ -20,7 +20,7 @@ void  parse_elf(char *elf_file){
     Assert(fp != NULL,"can't open fp\n");
 
 
-    Elf32_Ehdr ehdr;
+    Elf32_Ehdr ehdr;    //elf头
     Assert(fread(&ehdr,sizeof(Elf32_Ehdr),1,fp)>0,"can't read elf");//读取elf头
     fseek(fp, ehdr.e_shoff, SEEK_SET);    //定位至节头表
 
@@ -29,7 +29,7 @@ void  parse_elf(char *elf_file){
 
    
 
-    Elf32_Shdr shdr;
+    Elf32_Shdr shdr;    //节头
     char *stringtab = NULL;   //store strtab
  
     for(int i=0; i<ehdr.e_shnum; i++){ //依次读取节头表，找strtab
@@ -49,8 +49,8 @@ void  parse_elf(char *elf_file){
 
     //寻找符号表
    
-    fseek(fp,ehdr.e_shoff,SEEK_SET);
-    Elf32_Sym sym;
+    fseek(fp,ehdr.e_shoff,SEEK_SET);    //重新定位至节头表
+    Elf32_Sym sym;  //符号表
 
     for(int i=0; i<ehdr.e_shnum; i++){
         Assert(fread(&shdr,sizeof(Elf32_Shdr),1,fp)>0,"can't read shdr\n");  //依次遍历节头表，找Symtab

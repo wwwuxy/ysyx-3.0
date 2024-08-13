@@ -18,11 +18,15 @@ module IFU(
   output        io_ifu_valid	
 );
 
-  reg        arvalid;	
-  reg        valid;	
-  reg [31:0] IPC;	
-  reg [31:0] IR;	
-  reg [1:0]  state;	
+  reg         arvalid;	
+  reg         valid;	
+  reg  [31:0] IPC;	
+  reg  [31:0] IR;	
+  reg  [1:0]  state;	
+  wire        _GEN = state == 2'h0;	
+  wire        _GEN_0 = state == 2'h1;	
+  wire        _GEN_1 = arvalid & io_ifu_axi_in_bits_arready;	
+  wire        _GEN_2 = _GEN_0 & _GEN_1;	
   always @(posedge clock) begin	
     if (reset) begin	
       arvalid <= 1'h0;	
@@ -32,38 +36,33 @@ module IFU(
       state <= 2'h0;	
     end
     else begin	
-      automatic logic            _GEN = state == 2'h0;	
-      automatic logic            _GEN_0;	
-      automatic logic            _GEN_1;	
-      automatic logic            _GEN_2;	
-      automatic logic            _GEN_3 =
+      automatic logic            _GEN_3;	
+      automatic logic            _GEN_4 =
         io_ifu_axi_in_bits_rvalid & io_ifu_axi_in_bits_rresp == 2'h0;	
-      automatic logic            _GEN_4;	
-      automatic logic [3:0][1:0] _GEN_5;	
-      _GEN_0 = io_pc == IPC;	
-      _GEN_1 = state == 2'h1;	
-      _GEN_2 = arvalid & io_ifu_axi_in_bits_arready;	
-      _GEN_4 = state == 2'h2 & _GEN_3;	
+      automatic logic            _GEN_5;	
+      automatic logic [3:0][1:0] _GEN_6;	
+      _GEN_3 = io_pc == IPC;	
+      _GEN_5 = state == 2'h2 & _GEN_4;	
       if (_GEN) begin	
-        arvalid <= ~_GEN_0 & io_ifu_axi_out_ready | arvalid;	
-        valid <= ~_GEN_0 | valid;	
+        arvalid <= ~_GEN_3 & io_ifu_axi_out_ready | arvalid;	
+        valid <= ~_GEN_3 | valid;	
       end
       else begin	
-        arvalid <= ~(_GEN_1 & _GEN_2) & arvalid;	
-        valid <= (_GEN_1 | ~_GEN_4) & valid;	
+        arvalid <= ~_GEN_2 & arvalid;	
+        valid <= (_GEN_0 | ~_GEN_5) & valid;	
       end
-      if (_GEN | _GEN_1 | ~_GEN_4) begin	
+      if (_GEN | _GEN_0 | ~_GEN_5) begin	
       end
       else begin	
         IPC <= io_pc;	
         IR <= io_ifu_axi_in_bits_rdata;	
       end
-      _GEN_5 =
+      _GEN_6 =
         {{(&state) & io_out_ready ? 2'h0 : state},
-         {_GEN_3 ? 2'h3 : state},
-         {_GEN_2 ? 2'h2 : state},
-         {_GEN_0 | ~io_ifu_axi_out_ready ? state : 2'h1}};	
-      state <= _GEN_5[state];	
+         {_GEN_4 ? 2'h3 : state},
+         {_GEN_1 ? 2'h2 : state},
+         {_GEN_3 | ~io_ifu_axi_out_ready ? state : 2'h1}};	
+      state <= _GEN_6[state];	
     end
   end 
   assign io_out_valid = &state;	
@@ -71,7 +70,7 @@ module IFU(
   assign io_out_bits_pc = IPC;	
   assign io_ifu_axi_out_valid = valid;	
   assign io_ifu_axi_out_bits_arvalid = arvalid;	
-  assign io_ifu_axi_out_bits_araddr = io_pc;	
+  assign io_ifu_axi_out_bits_araddr = _GEN | ~_GEN_2 ? 32'h0 : io_pc;	
   assign io_ifu_axi_in_ready = valid;	
   assign io_ifu_valid = valid;	
 endmodule
@@ -84,13 +83,15 @@ module CONTORLLER(
   output [2:0]  io_rf_wr_sel,	
   output        io_alu_a_sel,	
                 io_alu_b_sel,	
-                io_mem_wr_en,	
   output [12:0] io_alu_sel,	
   output        io_jump_en,	
                 io_jump_jalr,	
-  output [31:0] io_len,	
-                io_imm,	
-  output        io_is_ecall,	
+  output [2:0]  io_arsize,	
+                io_awsize,	
+  output [3:0]  io_wstrb,	
+  output [31:0] io_imm,	
+  output        io_load_unsign,	
+                io_is_ecall,	
                 io_is_csr,	
                 io_is_mret,	
                 io_is_load,	
@@ -171,7 +172,6 @@ module CONTORLLER(
   assign io_alu_b_sel =
     _GEN_39 | _GEN_38 | _GEN_37 | _GEN_36 | _GEN_34 | _GEN_33 | _GEN_32 | _GEN_31
     | _GEN_30 | _GEN_29;	
-  assign io_mem_wr_en = _GEN_16 | _GEN_15 | _GEN_14;	
   assign io_alu_sel =
     _GEN_39
       ? 13'h80
@@ -232,18 +232,9 @@ module CONTORLLER(
                   ? $signed(io_rs1) < $signed(io_rs2)
                   : _GEN_2 ? io_rs1 != io_rs2 : _GEN_1 ? io_rs1 == io_rs2 : is_jal;	
   assign io_jump_jalr = is_jalr;	
-  assign io_len =
-    _GEN_16
-      ? 32'h4
-      : _GEN_15
-          ? 32'h2
-          : _GEN_14
-              ? 32'h1
-              : _GEN_12
-                  ? 32'h2
-                  : _GEN_11
-                      ? 32'h1
-                      : _GEN_10 ? 32'h4 : _GEN_9 ? 32'h2 : _GEN_8 ? 32'h1 : 32'h4;	
+  assign io_arsize = _GEN_12 ? 3'h1 : _GEN_11 ? 3'h0 : _GEN_10 ? 3'h2 : {2'h0, _GEN_9};	
+  assign io_awsize = _GEN_16 ? 3'h2 : {2'h0, _GEN_15};	
+  assign io_wstrb = _GEN_16 ? 4'hF : _GEN_15 ? 4'h3 : {3'h0, _GEN_14};	
   assign io_imm =
     isB_type
       ? {{20{io_inst[31]}}, io_inst[7], io_inst[30:25], io_inst[11:8], 1'h0}
@@ -269,6 +260,7 @@ module CONTORLLER(
                                     & io_inst[14:12] != 3'h1
                                       ? {{20{io_inst[31]}}, io_inst[31:20]}
                                       : 32'h0;	
+  assign io_load_unsign = _GEN_12 | _GEN_11;	
   assign io_is_ecall = io_inst == 32'h73;	
   assign io_is_csr =
     io_inst[6:0] == 7'h73
@@ -846,8 +838,10 @@ module IDU(
                 io_out_bits_is_mret,	
   output [31:0] io_out_bits_mtvec,	
                 io_out_bits_epc,	
-  output        io_out_bits_mem_wr_en,	
-  output [31:0] io_out_bits_len,	
+  output        io_out_bits_load_unsign,	
+  output [2:0]  io_out_bits_arsize,	
+                io_out_bits_awsize,	
+  output [3:0]  io_out_bits_wstrb,	
   output        io_out_bits_is_load,	
                 io_out_bits_isS_type,	
   input  [31:0] io_alu_rsl,	
@@ -871,25 +865,27 @@ module IDU(
       state <= ~state & (io_in_valid | state);	
   end 
   CONTORLLER Contorller (	
-    .io_inst      (io_in_bits_inst),
-    .io_rs1       (_RegisterFile_io_rd1),	
-    .io_rs2       (_RegisterFile_io_rd2),	
-    .io_rf_wr_en  (_Contorller_io_rf_wr_en),
-    .io_rf_wr_sel (_Contorller_io_rf_wr_sel),
-    .io_alu_a_sel (io_out_bits_alu_a_sel),
-    .io_alu_b_sel (io_out_bits_alu_b_sel),
-    .io_mem_wr_en (io_out_bits_mem_wr_en),
-    .io_alu_sel   (io_out_bits_alu_sel),
-    .io_jump_en   (io_out_bits_jump_en),
-    .io_jump_jalr (io_out_bits_jump_jalr),
-    .io_len       (io_out_bits_len),
-    .io_imm       (io_out_bits_imm),
-    .io_is_ecall  (_Contorller_io_is_ecall),
-    .io_is_csr    (_Contorller_io_is_csr),
-    .io_is_mret   (_Contorller_io_is_mret),
-    .io_is_load   (io_out_bits_is_load),
-    .io_isS_type  (io_out_bits_isS_type),
-    .io_is_ebreak (_Contorller_io_is_ebreak)
+    .io_inst        (io_in_bits_inst),
+    .io_rs1         (_RegisterFile_io_rd1),	
+    .io_rs2         (_RegisterFile_io_rd2),	
+    .io_rf_wr_en    (_Contorller_io_rf_wr_en),
+    .io_rf_wr_sel   (_Contorller_io_rf_wr_sel),
+    .io_alu_a_sel   (io_out_bits_alu_a_sel),
+    .io_alu_b_sel   (io_out_bits_alu_b_sel),
+    .io_alu_sel     (io_out_bits_alu_sel),
+    .io_jump_en     (io_out_bits_jump_en),
+    .io_jump_jalr   (io_out_bits_jump_jalr),
+    .io_arsize      (io_out_bits_arsize),
+    .io_awsize      (io_out_bits_awsize),
+    .io_wstrb       (io_out_bits_wstrb),
+    .io_imm         (io_out_bits_imm),
+    .io_load_unsign (io_out_bits_load_unsign),
+    .io_is_ecall    (_Contorller_io_is_ecall),
+    .io_is_csr      (_Contorller_io_is_csr),
+    .io_is_mret     (_Contorller_io_is_mret),
+    .io_is_load     (io_out_bits_is_load),
+    .io_isS_type    (io_out_bits_isS_type),
+    .io_is_ebreak   (_Contorller_io_is_ebreak)
   );
   REGISTERFILE RegisterFile (	
     .clock        (clock),
@@ -962,16 +958,20 @@ module EXU(
                 io_in_bits_is_mret,	
   input  [31:0] io_in_bits_mtvec,	
                 io_in_bits_epc,	
-  input         io_in_bits_mem_wr_en,	
-  input  [31:0] io_in_bits_len,	
+  input         io_in_bits_load_unsign,	
+  input  [2:0]  io_in_bits_arsize,	
+                io_in_bits_awsize,	
+  input  [3:0]  io_in_bits_wstrb,	
   input         io_in_bits_is_load,	
                 io_in_bits_isS_type,	
   output        io_out_valid,	
   output [31:0] io_out_bits_alu_out,	
                 io_out_bits_data,	
-  output        io_out_bits_mem_wr_en,	
-  output [31:0] io_out_bits_len,	
-  output        io_out_bits_jump_jalr,	
+  output [2:0]  io_out_bits_arsize,	
+                io_out_bits_awsize,	
+  output [3:0]  io_out_bits_wstrb,	
+  output        io_out_bits_load_unsign,	
+                io_out_bits_jump_jalr,	
                 io_out_bits_jump_en,	
   output [31:0] io_out_bits_imm,	
   output        io_out_bits_is_ecall,	
@@ -1002,8 +1002,10 @@ module EXU(
   );
   assign io_out_valid = state;	
   assign io_out_bits_data = io_in_bits_rs2;	
-  assign io_out_bits_mem_wr_en = io_in_bits_mem_wr_en;	
-  assign io_out_bits_len = io_in_bits_len;	
+  assign io_out_bits_arsize = io_in_bits_arsize;	
+  assign io_out_bits_awsize = io_in_bits_awsize;	
+  assign io_out_bits_wstrb = io_in_bits_wstrb;	
+  assign io_out_bits_load_unsign = io_in_bits_load_unsign;	
   assign io_out_bits_jump_jalr = io_in_bits_jump_jalr;	
   assign io_out_bits_jump_en = io_in_bits_jump_en;	
   assign io_out_bits_imm = io_in_bits_imm;	
@@ -1022,9 +1024,11 @@ module ISU(
                 io_in_valid,	
   input  [31:0] io_in_bits_alu_out,	
                 io_in_bits_data,	
-  input         io_in_bits_mem_wr_en,	
-  input  [31:0] io_in_bits_len,	
-  input         io_in_bits_jump_jalr,	
+  input  [2:0]  io_in_bits_arsize,	
+                io_in_bits_awsize,	
+  input  [3:0]  io_in_bits_wstrb,	
+  input         io_in_bits_load_unsign,	
+                io_in_bits_jump_jalr,	
                 io_in_bits_jump_en,	
   input  [31:0] io_in_bits_imm,	
   input         io_in_bits_is_ecall,	
@@ -1056,26 +1060,30 @@ module ISU(
   output [2:0]  io_isu_axi_out_bits_arsize,	
   output        io_isu_axi_out_bits_awvalid,	
   output [31:0] io_isu_axi_out_bits_awaddr,	
+  output [2:0]  io_isu_axi_out_bits_awsize,	
   output        io_isu_axi_out_bits_wvalid,	
   output [31:0] io_isu_axi_out_bits_wdata,	
-                io_isu_axi_out_bits_wstrb,	
+  output [3:0]  io_isu_axi_out_bits_wstrb,	
   output        io_isu_axi_in_ready,	
   input         io_isu_axi_in_bits_arready,	
+                io_isu_axi_in_bits_rvalid,	
   input  [31:0] io_isu_axi_in_bits_rdata,	
   input  [1:0]  io_isu_axi_in_bits_rresp,	
   input         io_isu_axi_in_bits_awready,	
                 io_isu_axi_in_bits_wready,	
+                io_isu_axi_in_bits_bvalid,	
   input  [1:0]  io_isu_axi_in_bits_bresp,	
   output        io_isu_valid	
 );
 
-  reg       store_finish;	
-  reg       load_finish;	
-  reg       arvalid;	
-  reg       awvalid;	
-  reg       wvalid;	
-  reg       valid;	
-  reg [2:0] state;	
+  reg        store_finish;	
+  reg        load_finish;	
+  reg        arvalid;	
+  reg        awvalid;	
+  reg        wvalid;	
+  reg        valid;	
+  reg [31:0] dm_out;	
+  reg [2:0]  state;	
   always @(posedge clock) begin	
     if (reset) begin	
       store_finish <= 1'h0;	
@@ -1084,11 +1092,12 @@ module ISU(
       awvalid <= 1'h0;	
       wvalid <= 1'h0;	
       valid <= 1'h0;	
+      dm_out <= 32'h0;	
       state <= 3'h0;	
     end
     else begin	
       automatic logic            _GEN = state == 3'h0;	
-      automatic logic            _GEN_0;	
+      automatic logic            _GEN_0 = io_in_bits_is_load | io_in_bits_isS_type;	
       automatic logic            _GEN_1;	
       automatic logic            _GEN_2;	
       automatic logic            _GEN_3;	
@@ -1096,12 +1105,21 @@ module ISU(
       automatic logic            _GEN_5;	
       automatic logic            _GEN_6;	
       automatic logic            _GEN_7;	
-      automatic logic            _GEN_8;	
-      automatic logic            _GEN_9 = io_isu_axi_in_bits_rresp == 2'h0;	
+      automatic logic            _GEN_8 = state == 3'h5;	
+      automatic logic            _GEN_9 =
+        io_isu_axi_in_bits_rvalid & io_isu_axi_in_bits_rresp == 2'h0;	
       automatic logic            _GEN_10;	
       automatic logic            _GEN_11;	
-      automatic logic [7:0][2:0] _GEN_12;	
-      _GEN_0 = io_in_bits_is_load | io_in_bits_isS_type;	
+      automatic logic            _GEN_12 =
+        io_isu_axi_in_bits_bresp == 2'h0 & io_isu_axi_in_bits_bvalid;	
+      automatic logic            _GEN_13 = io_in_bits_isS_type & _GEN_12;	
+      automatic logic            _GEN_14;	
+      automatic logic [2:0]      _GEN_15 =
+        _GEN_8 & (io_in_bits_is_load ? _GEN_9 : ~io_in_bits_isS_type | _GEN_12)
+          ? 3'h0
+          : state;	
+      automatic logic [7:0]      _GEN_16;	
+      automatic logic [7:0][2:0] _GEN_17;	
       _GEN_1 = state == 3'h1;	
       _GEN_2 = state == 3'h2;	
       _GEN_3 = arvalid & io_isu_axi_in_bits_arready;	
@@ -1109,25 +1127,24 @@ module ISU(
       _GEN_5 = awvalid & io_isu_axi_in_bits_awready;	
       _GEN_6 = state == 3'h4;	
       _GEN_7 = wvalid & io_isu_axi_in_bits_wready;	
-      _GEN_8 = state == 3'h5;	
       _GEN_10 = _GEN_1 | _GEN_2 | _GEN_4 | _GEN_6;	
       _GEN_11 = _GEN | _GEN_10;	
-      store_finish <=
-        ~_GEN_11 & _GEN_8 & ~_GEN_9 & io_isu_axi_in_bits_bresp == 2'h0 | store_finish;	
-      load_finish <= ~_GEN_11 & _GEN_8 & _GEN_9 | load_finish;	
-      if (_GEN)	
-        valid <= io_in_valid & _GEN_0 | valid;	
-      else begin	
+      _GEN_14 =
+        _GEN_10 | ~_GEN_8
+          ? valid
+          : io_in_bits_is_load ? ~_GEN_9 & valid : ~_GEN_13 & valid;	
+      store_finish <= ~_GEN_11 & _GEN_8 & ~io_in_bits_is_load & _GEN_13 | store_finish;	
+      load_finish <= ~_GEN_11 & _GEN_8 & io_in_bits_is_load & _GEN_9 | load_finish;	
+      if (~_GEN) begin	
         if (_GEN_1) begin	
           arvalid <= io_isu_axi_out_ready & io_in_bits_is_load | arvalid;	
           awvalid <=
-            io_isu_axi_out_ready & ~io_in_bits_is_load & io_in_bits_mem_wr_en | awvalid;	
+            io_isu_axi_out_ready & ~io_in_bits_is_load & io_in_bits_isS_type | awvalid;	
         end
         else begin	
           arvalid <= ~(_GEN_2 & _GEN_3) & arvalid;	
           awvalid <= (_GEN_2 | ~(_GEN_4 & _GEN_5)) & awvalid;	
         end
-        valid <= (_GEN_10 | ~_GEN_8) & valid;	
       end
       if (~(_GEN | _GEN_1 | _GEN_2)) begin	
         if (_GEN_4)	
@@ -1135,22 +1152,39 @@ module ISU(
         else	
           wvalid <= ~(_GEN_6 & _GEN_7) & wvalid;	
       end
-      _GEN_12 =
-        {{state},
-         {state},
-         {3'h0},
+      _GEN_16 =
+        {{_GEN_14},
+         {_GEN_14},
+         {_GEN_14},
+         {valid},
+         {valid},
+         {valid},
+         {valid},
+         {io_in_valid & _GEN_0 | valid}};	
+      valid <= _GEN_16[state];	
+      if (io_in_bits_load_unsign)	
+        dm_out <=
+          io_in_bits_arsize == 3'h0
+            ? {24'h0, io_isu_axi_in_bits_rdata[7:0]}
+            : io_in_bits_arsize == 3'h1
+                ? {16'h0, io_isu_axi_in_bits_rdata[15:0]}
+                : io_isu_axi_in_bits_rdata;	
+      _GEN_17 =
+        {{_GEN_15},
+         {_GEN_15},
+         {_GEN_15},
          {_GEN_7 ? 3'h5 : state},
          {_GEN_5 ? 3'h4 : state},
          {_GEN_3 ? 3'h5 : state},
          {io_isu_axi_out_ready
-            ? (io_in_bits_is_load ? 3'h2 : io_in_bits_mem_wr_en ? 3'h3 : state)
+            ? (io_in_bits_is_load ? 3'h2 : io_in_bits_isS_type ? 3'h3 : state)
             : state},
          {io_in_valid ? {~_GEN_0, 2'h1} : state}};	
-      state <= _GEN_12[state];	
+      state <= _GEN_17[state];	
     end
   end 
   assign io_out_valid = state == 3'h5;	
-  assign io_out_bits_dm_out = io_isu_axi_in_bits_rdata;	
+  assign io_out_bits_dm_out = dm_out;	
   assign io_out_bits_alu_out = io_in_bits_alu_out;	
   assign io_out_bits_jump_jalr = io_in_bits_jump_jalr;	
   assign io_out_bits_jump_en = io_in_bits_jump_en;	
@@ -1167,12 +1201,13 @@ module ISU(
   assign io_isu_axi_out_valid = valid;	
   assign io_isu_axi_out_bits_arvalid = arvalid;	
   assign io_isu_axi_out_bits_araddr = io_in_bits_alu_out;	
-  assign io_isu_axi_out_bits_arsize = io_in_bits_len[2:0];	
+  assign io_isu_axi_out_bits_arsize = io_in_bits_arsize;	
   assign io_isu_axi_out_bits_awvalid = awvalid;	
   assign io_isu_axi_out_bits_awaddr = io_in_bits_alu_out;	
+  assign io_isu_axi_out_bits_awsize = io_in_bits_awsize;	
   assign io_isu_axi_out_bits_wvalid = wvalid;	
   assign io_isu_axi_out_bits_wdata = io_in_bits_data;	
-  assign io_isu_axi_out_bits_wstrb = io_in_bits_len;	
+  assign io_isu_axi_out_bits_wstrb = io_in_bits_wstrb;	
   assign io_isu_axi_in_ready = valid;	
   assign io_isu_valid = valid;	
 endmodule
@@ -1295,15 +1330,18 @@ module XBAR(
   input  [2:0]  io_isu_axi_in_bits_arsize,	
   input         io_isu_axi_in_bits_awvalid,	
   input  [31:0] io_isu_axi_in_bits_awaddr,	
+  input  [2:0]  io_isu_axi_in_bits_awsize,	
   input         io_isu_axi_in_bits_wvalid,	
   input  [31:0] io_isu_axi_in_bits_wdata,	
-                io_isu_axi_in_bits_wstrb,	
+  input  [3:0]  io_isu_axi_in_bits_wstrb,	
   input         io_isu_axi_out_ready,	
   output        io_isu_axi_out_bits_arready,	
+                io_isu_axi_out_bits_rvalid,	
   output [31:0] io_isu_axi_out_bits_rdata,	
   output [1:0]  io_isu_axi_out_bits_rresp,	
   output        io_isu_axi_out_bits_awready,	
                 io_isu_axi_out_bits_wready,	
+                io_isu_axi_out_bits_bvalid,	
   output [1:0]  io_isu_axi_out_bits_bresp,	
   input         io_xbar_in_bits_arready,	
                 io_xbar_in_bits_rvalid,	
@@ -1311,15 +1349,17 @@ module XBAR(
   input  [1:0]  io_xbar_in_bits_rresp,	
   input         io_xbar_in_bits_awready,	
                 io_xbar_in_bits_wready,	
+                io_xbar_in_bits_bvalid,	
   input  [1:0]  io_xbar_in_bits_bresp,	
   output        io_xbar_out_bits_arvalid,	
   output [31:0] io_xbar_out_bits_araddr,	
   output [2:0]  io_xbar_out_bits_arsize,	
   output        io_xbar_out_bits_awvalid,	
   output [31:0] io_xbar_out_bits_awaddr,	
+  output [2:0]  io_xbar_out_bits_awsize,	
   output        io_xbar_out_bits_wvalid,	
   output [31:0] io_xbar_out_bits_wdata,	
-                io_xbar_out_bits_wstrb,	
+  output [3:0]  io_xbar_out_bits_wstrb,	
   input         io_ifu_valid,	
                 io_isu_valid	
 );
@@ -1349,7 +1389,8 @@ module XBAR(
         state <= 3'h4;	
     end
     else if (state == 3'h4
-             & (io_xbar_in_bits_rresp == 2'h1 | io_xbar_in_bits_bresp == 2'h1))	
+             & (io_xbar_in_bits_rresp == 2'h0 & io_xbar_in_bits_rvalid
+                | io_xbar_in_bits_bresp == 2'h0 & io_xbar_in_bits_bvalid))	
       state <= 3'h0;	
   end 
   assign io_ifu_axi_in_ready = ifu_selected;	
@@ -1359,21 +1400,24 @@ module XBAR(
   assign io_ifu_axi_out_bits_rresp = io_xbar_in_bits_rresp;	
   assign io_isu_axi_in_ready = state == 3'h2 | _io_isu_axi_out_valid_T & io_isu_valid;	
   assign io_isu_axi_out_bits_arready = io_xbar_in_bits_arready;	
+  assign io_isu_axi_out_bits_rvalid = io_xbar_in_bits_rvalid;	
   assign io_isu_axi_out_bits_rdata = io_xbar_in_bits_rdata;	
   assign io_isu_axi_out_bits_rresp = io_xbar_in_bits_rresp;	
   assign io_isu_axi_out_bits_awready = io_xbar_in_bits_awready;	
   assign io_isu_axi_out_bits_wready = io_xbar_in_bits_wready;	
+  assign io_isu_axi_out_bits_bvalid = io_xbar_in_bits_bvalid;	
   assign io_isu_axi_out_bits_bresp = io_xbar_in_bits_bresp;	
   assign io_xbar_out_bits_arvalid =
     ifu_selected ? io_ifu_axi_in_bits_arvalid : io_isu_axi_in_bits_arvalid;	
   assign io_xbar_out_bits_araddr =
     ifu_selected ? io_ifu_axi_in_bits_araddr : io_isu_axi_in_bits_araddr;	
-  assign io_xbar_out_bits_arsize = ifu_selected ? 3'h4 : io_isu_axi_in_bits_arsize;	
+  assign io_xbar_out_bits_arsize = ifu_selected ? 3'h2 : io_isu_axi_in_bits_arsize;	
   assign io_xbar_out_bits_awvalid = ~ifu_selected & io_isu_axi_in_bits_awvalid;	
   assign io_xbar_out_bits_awaddr = ifu_selected ? 32'h0 : io_isu_axi_in_bits_awaddr;	
+  assign io_xbar_out_bits_awsize = ifu_selected ? 3'h0 : io_isu_axi_in_bits_awsize;	
   assign io_xbar_out_bits_wvalid = ~ifu_selected & io_isu_axi_in_bits_wvalid;	
   assign io_xbar_out_bits_wdata = ifu_selected ? 32'h0 : io_isu_axi_in_bits_wdata;	
-  assign io_xbar_out_bits_wstrb = ifu_selected ? 32'h0 : io_isu_axi_in_bits_wstrb;	
+  assign io_xbar_out_bits_wstrb = ifu_selected ? 4'h0 : io_isu_axi_in_bits_wstrb;	
 endmodule
 
 module ysyx_23060192(	
@@ -1447,12 +1491,13 @@ module ysyx_23060192(
   wire [1:0]  _xbar_io_ifu_axi_out_bits_rresp;	
   wire        _xbar_io_isu_axi_in_ready;	
   wire        _xbar_io_isu_axi_out_bits_arready;	
+  wire        _xbar_io_isu_axi_out_bits_rvalid;	
   wire [31:0] _xbar_io_isu_axi_out_bits_rdata;	
   wire [1:0]  _xbar_io_isu_axi_out_bits_rresp;	
   wire        _xbar_io_isu_axi_out_bits_awready;	
   wire        _xbar_io_isu_axi_out_bits_wready;	
+  wire        _xbar_io_isu_axi_out_bits_bvalid;	
   wire [1:0]  _xbar_io_isu_axi_out_bits_bresp;	
-  wire [31:0] _xbar_io_xbar_out_bits_wstrb;	
   wire [31:0] _pc_io_next_pc;	
   wire        _wbu_io_out_valid;	
   wire        _wbu_io_out_bits_jump_jalr;	
@@ -1487,16 +1532,19 @@ module ysyx_23060192(
   wire [2:0]  _isu_io_isu_axi_out_bits_arsize;	
   wire        _isu_io_isu_axi_out_bits_awvalid;	
   wire [31:0] _isu_io_isu_axi_out_bits_awaddr;	
+  wire [2:0]  _isu_io_isu_axi_out_bits_awsize;	
   wire        _isu_io_isu_axi_out_bits_wvalid;	
   wire [31:0] _isu_io_isu_axi_out_bits_wdata;	
-  wire [31:0] _isu_io_isu_axi_out_bits_wstrb;	
+  wire [3:0]  _isu_io_isu_axi_out_bits_wstrb;	
   wire        _isu_io_isu_axi_in_ready;	
   wire        _isu_io_isu_valid;	
   wire        _exu_io_out_valid;	
   wire [31:0] _exu_io_out_bits_alu_out;	
   wire [31:0] _exu_io_out_bits_data;	
-  wire        _exu_io_out_bits_mem_wr_en;	
-  wire [31:0] _exu_io_out_bits_len;	
+  wire [2:0]  _exu_io_out_bits_arsize;	
+  wire [2:0]  _exu_io_out_bits_awsize;	
+  wire [3:0]  _exu_io_out_bits_wstrb;	
+  wire        _exu_io_out_bits_load_unsign;	
   wire        _exu_io_out_bits_jump_jalr;	
   wire        _exu_io_out_bits_jump_en;	
   wire [31:0] _exu_io_out_bits_imm;	
@@ -1522,8 +1570,10 @@ module ysyx_23060192(
   wire        _idu_io_out_bits_is_mret;	
   wire [31:0] _idu_io_out_bits_mtvec;	
   wire [31:0] _idu_io_out_bits_epc;	
-  wire        _idu_io_out_bits_mem_wr_en;	
-  wire [31:0] _idu_io_out_bits_len;	
+  wire        _idu_io_out_bits_load_unsign;	
+  wire [2:0]  _idu_io_out_bits_arsize;	
+  wire [2:0]  _idu_io_out_bits_awsize;	
+  wire [3:0]  _idu_io_out_bits_wstrb;	
   wire        _idu_io_out_bits_is_load;	
   wire        _idu_io_out_bits_isS_type;	
   wire        _ifu_io_out_valid;	
@@ -1554,70 +1604,76 @@ module ysyx_23060192(
     .io_ifu_valid                (_ifu_io_ifu_valid)
   );
   IDU idu (	
-    .clock                 (clock),
-    .reset                 (reset),
-    .io_in_ready           (_idu_io_in_ready),
-    .io_in_valid           (_ifu_io_out_valid),	
-    .io_in_bits_inst       (_ifu_io_out_bits_inst),	
-    .io_in_bits_pc         (_ifu_io_out_bits_pc),	
-    .io_out_valid          (_idu_io_out_valid),
-    .io_out_bits_rs1       (_idu_io_out_bits_rs1),
-    .io_out_bits_rs2       (_idu_io_out_bits_rs2),
-    .io_out_bits_imm       (_idu_io_out_bits_imm),
-    .io_out_bits_alu_sel   (_idu_io_out_bits_alu_sel),
-    .io_out_bits_alu_a_sel (_idu_io_out_bits_alu_a_sel),
-    .io_out_bits_alu_b_sel (_idu_io_out_bits_alu_b_sel),
-    .io_out_bits_pc        (_idu_io_out_bits_pc),
-    .io_out_bits_jump_en   (_idu_io_out_bits_jump_en),
-    .io_out_bits_jump_jalr (_idu_io_out_bits_jump_jalr),
-    .io_out_bits_is_ecall  (_idu_io_out_bits_is_ecall),
-    .io_out_bits_is_mret   (_idu_io_out_bits_is_mret),
-    .io_out_bits_mtvec     (_idu_io_out_bits_mtvec),
-    .io_out_bits_epc       (_idu_io_out_bits_epc),
-    .io_out_bits_mem_wr_en (_idu_io_out_bits_mem_wr_en),
-    .io_out_bits_len       (_idu_io_out_bits_len),
-    .io_out_bits_is_load   (_idu_io_out_bits_is_load),
-    .io_out_bits_isS_type  (_idu_io_out_bits_isS_type),
-    .io_alu_rsl            (_wbu_io_alu_out),	
-    .io_dm_out             (_wbu_io_dm_out),	
-    .io_wbu_valid          (_wbu_io_wbu_valid)	
+    .clock                   (clock),
+    .reset                   (reset),
+    .io_in_ready             (_idu_io_in_ready),
+    .io_in_valid             (_ifu_io_out_valid),	
+    .io_in_bits_inst         (_ifu_io_out_bits_inst),	
+    .io_in_bits_pc           (_ifu_io_out_bits_pc),	
+    .io_out_valid            (_idu_io_out_valid),
+    .io_out_bits_rs1         (_idu_io_out_bits_rs1),
+    .io_out_bits_rs2         (_idu_io_out_bits_rs2),
+    .io_out_bits_imm         (_idu_io_out_bits_imm),
+    .io_out_bits_alu_sel     (_idu_io_out_bits_alu_sel),
+    .io_out_bits_alu_a_sel   (_idu_io_out_bits_alu_a_sel),
+    .io_out_bits_alu_b_sel   (_idu_io_out_bits_alu_b_sel),
+    .io_out_bits_pc          (_idu_io_out_bits_pc),
+    .io_out_bits_jump_en     (_idu_io_out_bits_jump_en),
+    .io_out_bits_jump_jalr   (_idu_io_out_bits_jump_jalr),
+    .io_out_bits_is_ecall    (_idu_io_out_bits_is_ecall),
+    .io_out_bits_is_mret     (_idu_io_out_bits_is_mret),
+    .io_out_bits_mtvec       (_idu_io_out_bits_mtvec),
+    .io_out_bits_epc         (_idu_io_out_bits_epc),
+    .io_out_bits_load_unsign (_idu_io_out_bits_load_unsign),
+    .io_out_bits_arsize      (_idu_io_out_bits_arsize),
+    .io_out_bits_awsize      (_idu_io_out_bits_awsize),
+    .io_out_bits_wstrb       (_idu_io_out_bits_wstrb),
+    .io_out_bits_is_load     (_idu_io_out_bits_is_load),
+    .io_out_bits_isS_type    (_idu_io_out_bits_isS_type),
+    .io_alu_rsl              (_wbu_io_alu_out),	
+    .io_dm_out               (_wbu_io_dm_out),	
+    .io_wbu_valid            (_wbu_io_wbu_valid)	
   );
   EXU exu (	
-    .clock                 (clock),
-    .reset                 (reset),
-    .io_in_valid           (_idu_io_out_valid),	
-    .io_in_bits_rs1        (_idu_io_out_bits_rs1),	
-    .io_in_bits_rs2        (_idu_io_out_bits_rs2),	
-    .io_in_bits_imm        (_idu_io_out_bits_imm),	
-    .io_in_bits_alu_sel    (_idu_io_out_bits_alu_sel),	
-    .io_in_bits_alu_a_sel  (_idu_io_out_bits_alu_a_sel),	
-    .io_in_bits_alu_b_sel  (_idu_io_out_bits_alu_b_sel),	
-    .io_in_bits_pc         (_idu_io_out_bits_pc),	
-    .io_in_bits_jump_en    (_idu_io_out_bits_jump_en),	
-    .io_in_bits_jump_jalr  (_idu_io_out_bits_jump_jalr),	
-    .io_in_bits_is_ecall   (_idu_io_out_bits_is_ecall),	
-    .io_in_bits_is_mret    (_idu_io_out_bits_is_mret),	
-    .io_in_bits_mtvec      (_idu_io_out_bits_mtvec),	
-    .io_in_bits_epc        (_idu_io_out_bits_epc),	
-    .io_in_bits_mem_wr_en  (_idu_io_out_bits_mem_wr_en),	
-    .io_in_bits_len        (_idu_io_out_bits_len),	
-    .io_in_bits_is_load    (_idu_io_out_bits_is_load),	
-    .io_in_bits_isS_type   (_idu_io_out_bits_isS_type),	
-    .io_out_valid          (_exu_io_out_valid),
-    .io_out_bits_alu_out   (_exu_io_out_bits_alu_out),
-    .io_out_bits_data      (_exu_io_out_bits_data),
-    .io_out_bits_mem_wr_en (_exu_io_out_bits_mem_wr_en),
-    .io_out_bits_len       (_exu_io_out_bits_len),
-    .io_out_bits_jump_jalr (_exu_io_out_bits_jump_jalr),
-    .io_out_bits_jump_en   (_exu_io_out_bits_jump_en),
-    .io_out_bits_imm       (_exu_io_out_bits_imm),
-    .io_out_bits_is_ecall  (_exu_io_out_bits_is_ecall),
-    .io_out_bits_is_mret   (_exu_io_out_bits_is_mret),
-    .io_out_bits_mtvec     (_exu_io_out_bits_mtvec),
-    .io_out_bits_epc       (_exu_io_out_bits_epc),
-    .io_out_bits_rd1       (_exu_io_out_bits_rd1),
-    .io_out_bits_is_load   (_exu_io_out_bits_is_load),
-    .io_out_bits_isS_type  (_exu_io_out_bits_isS_type)
+    .clock                   (clock),
+    .reset                   (reset),
+    .io_in_valid             (_idu_io_out_valid),	
+    .io_in_bits_rs1          (_idu_io_out_bits_rs1),	
+    .io_in_bits_rs2          (_idu_io_out_bits_rs2),	
+    .io_in_bits_imm          (_idu_io_out_bits_imm),	
+    .io_in_bits_alu_sel      (_idu_io_out_bits_alu_sel),	
+    .io_in_bits_alu_a_sel    (_idu_io_out_bits_alu_a_sel),	
+    .io_in_bits_alu_b_sel    (_idu_io_out_bits_alu_b_sel),	
+    .io_in_bits_pc           (_idu_io_out_bits_pc),	
+    .io_in_bits_jump_en      (_idu_io_out_bits_jump_en),	
+    .io_in_bits_jump_jalr    (_idu_io_out_bits_jump_jalr),	
+    .io_in_bits_is_ecall     (_idu_io_out_bits_is_ecall),	
+    .io_in_bits_is_mret      (_idu_io_out_bits_is_mret),	
+    .io_in_bits_mtvec        (_idu_io_out_bits_mtvec),	
+    .io_in_bits_epc          (_idu_io_out_bits_epc),	
+    .io_in_bits_load_unsign  (_idu_io_out_bits_load_unsign),	
+    .io_in_bits_arsize       (_idu_io_out_bits_arsize),	
+    .io_in_bits_awsize       (_idu_io_out_bits_awsize),	
+    .io_in_bits_wstrb        (_idu_io_out_bits_wstrb),	
+    .io_in_bits_is_load      (_idu_io_out_bits_is_load),	
+    .io_in_bits_isS_type     (_idu_io_out_bits_isS_type),	
+    .io_out_valid            (_exu_io_out_valid),
+    .io_out_bits_alu_out     (_exu_io_out_bits_alu_out),
+    .io_out_bits_data        (_exu_io_out_bits_data),
+    .io_out_bits_arsize      (_exu_io_out_bits_arsize),
+    .io_out_bits_awsize      (_exu_io_out_bits_awsize),
+    .io_out_bits_wstrb       (_exu_io_out_bits_wstrb),
+    .io_out_bits_load_unsign (_exu_io_out_bits_load_unsign),
+    .io_out_bits_jump_jalr   (_exu_io_out_bits_jump_jalr),
+    .io_out_bits_jump_en     (_exu_io_out_bits_jump_en),
+    .io_out_bits_imm         (_exu_io_out_bits_imm),
+    .io_out_bits_is_ecall    (_exu_io_out_bits_is_ecall),
+    .io_out_bits_is_mret     (_exu_io_out_bits_is_mret),
+    .io_out_bits_mtvec       (_exu_io_out_bits_mtvec),
+    .io_out_bits_epc         (_exu_io_out_bits_epc),
+    .io_out_bits_rd1         (_exu_io_out_bits_rd1),
+    .io_out_bits_is_load     (_exu_io_out_bits_is_load),
+    .io_out_bits_isS_type    (_exu_io_out_bits_isS_type)
   );
   ISU isu (	
     .clock                       (clock),
@@ -1625,8 +1681,10 @@ module ysyx_23060192(
     .io_in_valid                 (_exu_io_out_valid),	
     .io_in_bits_alu_out          (_exu_io_out_bits_alu_out),	
     .io_in_bits_data             (_exu_io_out_bits_data),	
-    .io_in_bits_mem_wr_en        (_exu_io_out_bits_mem_wr_en),	
-    .io_in_bits_len              (_exu_io_out_bits_len),	
+    .io_in_bits_arsize           (_exu_io_out_bits_arsize),	
+    .io_in_bits_awsize           (_exu_io_out_bits_awsize),	
+    .io_in_bits_wstrb            (_exu_io_out_bits_wstrb),	
+    .io_in_bits_load_unsign      (_exu_io_out_bits_load_unsign),	
     .io_in_bits_jump_jalr        (_exu_io_out_bits_jump_jalr),	
     .io_in_bits_jump_en          (_exu_io_out_bits_jump_en),	
     .io_in_bits_imm              (_exu_io_out_bits_imm),	
@@ -1659,15 +1717,18 @@ module ysyx_23060192(
     .io_isu_axi_out_bits_arsize  (_isu_io_isu_axi_out_bits_arsize),
     .io_isu_axi_out_bits_awvalid (_isu_io_isu_axi_out_bits_awvalid),
     .io_isu_axi_out_bits_awaddr  (_isu_io_isu_axi_out_bits_awaddr),
+    .io_isu_axi_out_bits_awsize  (_isu_io_isu_axi_out_bits_awsize),
     .io_isu_axi_out_bits_wvalid  (_isu_io_isu_axi_out_bits_wvalid),
     .io_isu_axi_out_bits_wdata   (_isu_io_isu_axi_out_bits_wdata),
     .io_isu_axi_out_bits_wstrb   (_isu_io_isu_axi_out_bits_wstrb),
     .io_isu_axi_in_ready         (_isu_io_isu_axi_in_ready),
     .io_isu_axi_in_bits_arready  (_xbar_io_isu_axi_out_bits_arready),	
+    .io_isu_axi_in_bits_rvalid   (_xbar_io_isu_axi_out_bits_rvalid),	
     .io_isu_axi_in_bits_rdata    (_xbar_io_isu_axi_out_bits_rdata),	
     .io_isu_axi_in_bits_rresp    (_xbar_io_isu_axi_out_bits_rresp),	
     .io_isu_axi_in_bits_awready  (_xbar_io_isu_axi_out_bits_awready),	
     .io_isu_axi_in_bits_wready   (_xbar_io_isu_axi_out_bits_wready),	
+    .io_isu_axi_in_bits_bvalid   (_xbar_io_isu_axi_out_bits_bvalid),	
     .io_isu_axi_in_bits_bresp    (_xbar_io_isu_axi_out_bits_bresp),	
     .io_isu_valid                (_isu_io_isu_valid)
   );
@@ -1735,15 +1796,18 @@ module ysyx_23060192(
     .io_isu_axi_in_bits_arsize   (_isu_io_isu_axi_out_bits_arsize),	
     .io_isu_axi_in_bits_awvalid  (_isu_io_isu_axi_out_bits_awvalid),	
     .io_isu_axi_in_bits_awaddr   (_isu_io_isu_axi_out_bits_awaddr),	
+    .io_isu_axi_in_bits_awsize   (_isu_io_isu_axi_out_bits_awsize),	
     .io_isu_axi_in_bits_wvalid   (_isu_io_isu_axi_out_bits_wvalid),	
     .io_isu_axi_in_bits_wdata    (_isu_io_isu_axi_out_bits_wdata),	
     .io_isu_axi_in_bits_wstrb    (_isu_io_isu_axi_out_bits_wstrb),	
     .io_isu_axi_out_ready        (_isu_io_isu_axi_in_ready),	
     .io_isu_axi_out_bits_arready (_xbar_io_isu_axi_out_bits_arready),
+    .io_isu_axi_out_bits_rvalid  (_xbar_io_isu_axi_out_bits_rvalid),
     .io_isu_axi_out_bits_rdata   (_xbar_io_isu_axi_out_bits_rdata),
     .io_isu_axi_out_bits_rresp   (_xbar_io_isu_axi_out_bits_rresp),
     .io_isu_axi_out_bits_awready (_xbar_io_isu_axi_out_bits_awready),
     .io_isu_axi_out_bits_wready  (_xbar_io_isu_axi_out_bits_wready),
+    .io_isu_axi_out_bits_bvalid  (_xbar_io_isu_axi_out_bits_bvalid),
     .io_isu_axi_out_bits_bresp   (_xbar_io_isu_axi_out_bits_bresp),
     .io_xbar_in_bits_arready     (io_master_arready),
     .io_xbar_in_bits_rvalid      (io_master_rvalid),
@@ -1751,27 +1815,27 @@ module ysyx_23060192(
     .io_xbar_in_bits_rresp       (io_master_rresp),
     .io_xbar_in_bits_awready     (io_master_awready),
     .io_xbar_in_bits_wready      (io_master_wready),
+    .io_xbar_in_bits_bvalid      (io_master_bvalid),
     .io_xbar_in_bits_bresp       (io_master_bresp),
     .io_xbar_out_bits_arvalid    (io_master_arvalid),
     .io_xbar_out_bits_araddr     (io_master_araddr),
     .io_xbar_out_bits_arsize     (io_master_arsize),
     .io_xbar_out_bits_awvalid    (io_master_awvalid),
     .io_xbar_out_bits_awaddr     (io_master_awaddr),
+    .io_xbar_out_bits_awsize     (io_master_awsize),
     .io_xbar_out_bits_wvalid     (io_master_wvalid),
     .io_xbar_out_bits_wdata      (io_master_wdata),
-    .io_xbar_out_bits_wstrb      (_xbar_io_xbar_out_bits_wstrb),
+    .io_xbar_out_bits_wstrb      (io_master_wstrb),
     .io_ifu_valid                (_ifu_io_ifu_valid),	
     .io_isu_valid                (_isu_io_isu_valid)	
   );
   assign io_master_arid = 4'h0;	
-  assign io_master_arlen = 8'h1;	
+  assign io_master_arlen = 8'h0;	
   assign io_master_arburst = 2'h0;	
   assign io_master_rready = 1'h1;	
   assign io_master_awid = 4'h0;	
-  assign io_master_awlen = 8'h1;	
-  assign io_master_awsize = 3'h4;	
+  assign io_master_awlen = 8'h0;	
   assign io_master_awburst = 2'h0;	
-  assign io_master_wstrb = _xbar_io_xbar_out_bits_wstrb[3:0];	
   assign io_master_wlast = 1'h0;	
   assign io_master_bready = 1'h1;	
   assign io_slave_arready = 1'h0;	

@@ -15,14 +15,15 @@ VERILATOR_FLAGS += -I$(SOCPATH)/uart16550/rtl
 VERILATOR_FLAGS += -I$(SOCPATH)/spi/rtl
 VERILATOR_FLAGS += --timescale "1ns/1ns" --no-timing
 VERILATOR_FLAGS += -j 16
+VERILATOR_FLAGS += --autoflush
 #VERILATOR_FLAGS += -Wall
 
 
 # run info
-OBJ_DIR := ./obj_dir
-BIN := $(OBJ_DIR)/V$(TOPNAME)
-IMG += $(SOCPATH)/uart16550/char-test.bin
-DIFF ?= $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
+OBJ_DIR  := ./obj_dir
+BIN      := $(OBJ_DIR)/V$(TOPNAME)
+IMG      += $(SOCPATH)/uart16550/char-test.bin
+DIFF     ?= $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
 RUN_ARGS := --img=$(IMG) --diff=${DIFF}
 
 

@@ -25,7 +25,18 @@ static int parse_args(int argc, char *argv[]){
 
 extern uint8_t mem[MEM_SIZE]; //通过extern关键字引用mem数组(mem.cpp中定义)
 
+void initialize_mem_with_ebreak() {
+    uint32_t ebreak = 0x00100073;  // ebreak 指令
+
+    // 将 ebreak 指令的字节写入 mem 数组的前 4 个字节
+    mem[0] = (ebreak >>  0) & 0xFF;  // 取 ebreak 的第 1 个字节
+    mem[1] = (ebreak >>  8) & 0xFF;  // 取 ebreak 的第 2 个字节
+    mem[2] = (ebreak >> 16) & 0xFF;  // 取 ebreak 的第 3 个字节
+    mem[3] = (ebreak >> 24) & 0xFF;  // 取 ebreak 的第 4 个字节
+}
+
 static void load_img(char *img_file ){
+  printf("load_img\n");
   if(img_file == NULL){
     printf("No image is given. Use the default build-in image.\n");
     return;  //built-in image size，仿照nemu/src/monitor/monitor.c
@@ -48,7 +59,9 @@ static void load_img(char *img_file ){
 void init_npc(int argc, char *argv[]){
   parse_args(argc, argv);
   load_img(img_file);
+  // initialize_mem_with_ebreak();
+  printf("init_npc done\n");
 
-  init_difftest(diff_file, size);  //加载动态链接库
+  // init_difftest(diff_file, size);  //加载动态链接库
 }
 

@@ -20,7 +20,7 @@ extern "C" {
     extern void flash_read(int addr, int* data);
     // DPI import at /home/wuxy/ysyx-workbench/ysyxSoC/build/ysyxSoCFull.v:4695:30
     extern void mrom_read(int raddr, int* rdata);
-    // DPI import at /home/wuxy/ysyx-workbench/npc/vsrc/ysyx_23060192.v:1795:34
+    // DPI import at /home/wuxy/ysyx-workbench/npc/vsrc/ysyx_23060192.v:1859:34
     extern void npc_trap(svBit flag);
 
 #ifdef __cplusplus
