@@ -22,6 +22,12 @@
 #define PMEM_RIGHT ((paddr_t)CONFIG_MBASE + CONFIG_MSIZE - 1)
 #define RESET_VECTOR (PMEM_LEFT + CONFIG_PC_RESET_OFFSET)
 
+/* for soc difftest */
+#define SRAM_BASE 0x0f000000
+#define SRAM_SIZE 0x2000
+#define MROM_BASE 0x20000000
+#define MROM_SIZE 0x1000
+
 /* convert the guest physical address in the guest program to host virtual address in NEMU */
 uint8_t* guest_to_host(paddr_t paddr);
 /* convert the host virtual address in NEMU to guest physical address in the guest program */

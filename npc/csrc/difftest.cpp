@@ -17,6 +17,7 @@ void difftest_skip_ref(int n) {
 }
 
 void difftest_skip() {
+    printf("skip\n");
     skip = true;
 }
 
@@ -62,7 +63,6 @@ static void checkregs(CPU_state ref, CPU_state dut){
 
 void difftest_step( ){
     CPU_state ref_r, dut;
-
     if(nr_skip > 0){
         ref_r = get_cpu_state(npc_reg, npc_pc);
         ref_difftest_regcpy(&ref_r, DIFFTEST_TO_REF);
@@ -70,16 +70,16 @@ void difftest_step( ){
         return;
     }
 
-    if(skip = true){
+    if(skip == true){
         skip = false;
         return;
     }
     
     dut = get_cpu_state(npc_reg, npc_pc);
-    ref_difftest_exec(1);
+    
     ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);    //读出nemu中运行后的寄存器值
     checkregs(ref_r, dut);  //对比npc和dut(此时放的是nemu中正确的运行结果)，检查是否相同
+    ref_difftest_exec(1);
     
-    printf("end difftest_step\n");
     return;
 }    

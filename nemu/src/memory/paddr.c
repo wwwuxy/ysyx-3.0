@@ -81,6 +81,8 @@ void init_mem() {
 
 word_t paddr_read(paddr_t addr, int len) {
   if (likely(in_pmem(addr))) return pmem_read(addr, len);
+  else if(addr >= MROM_BASE && addr < MROM_BASE + MROM_SIZE) return pmem_read(addr - MROM_BASE + CONFIG_MBASE, len);
+  else if(addr >= SRAM_BASE && addr < SRAM_BASE + SRAM_SIZE) return pmem_read(addr - SRAM_BASE + MROM_SIZE + CONFIG_MBASE, len);
   IFDEF(CONFIG_DEVICE, return mmio_read(addr, len));
   out_of_bound(addr);
   return 0;
@@ -88,6 +90,8 @@ word_t paddr_read(paddr_t addr, int len) {
 
 void paddr_write(paddr_t addr, int len, word_t data) {
   if (likely(in_pmem(addr))) { pmem_write(addr, len, data); return; }
+  else if(addr >= MROM_BASE && addr < MROM_BASE + MROM_SIZE) { pmem_write(addr - MROM_BASE + CONFIG_MBASE, len, data); return; }
+  else if(addr >= SRAM_BASE && addr < SRAM_BASE + SRAM_SIZE) { pmem_write(addr - SRAM_BASE + MROM_SIZE + CONFIG_MBASE, len, data); return; }
   IFDEF(CONFIG_DEVICE, mmio_write(addr, len, data); return);
   out_of_bound(addr);
 }

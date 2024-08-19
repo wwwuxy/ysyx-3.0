@@ -27,7 +27,7 @@ bool isa_difftest_checkregs(CPU_state ref, CPU_state dut){
         printf("pc is different, ref: 0x%08x, dut: 0x%08x\n", ref.pc, dut.pc);
         return false;
     }
-    return true; 
+    return true;
 }
 
 void print_reg(CPU_state dut){

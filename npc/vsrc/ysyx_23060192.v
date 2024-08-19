@@ -1,3 +1,5 @@
+
+
 module IFU(	
   input         clock,	
                 reset,	
@@ -65,6 +67,12 @@ module IFU(
       state <= _GEN_6[state];	
     end
   end 
+  npc_pc npc_pc (	
+    .pc (IPC)	
+  );
+  npc_inst npc_inst (	
+    .inst (IR)	
+  );
   assign io_out_valid = &state;	
   assign io_out_bits_inst = IR;	
   assign io_out_bits_pc = IPC;	
@@ -916,6 +924,7 @@ module IDU(
   assign io_out_bits_is_mret = _Contorller_io_is_mret;	
 endmodule
 
+
 module ALU(	
   input  [31:0] io_rs1,	
                 io_rs2,	
@@ -983,13 +992,17 @@ module EXU(
                 io_out_bits_isS_type	
 );
 
-  reg state;	
+  wire [31:0] _Alu_io_rsl;	
+  reg         state;	
   always @(posedge clock) begin	
     if (reset)	
       state <= 1'h0;	
     else	
       state <= ~state & (io_in_valid | state);	
   end 
+  npc_alu_out npc_alu_out (	
+    .alu_out (_Alu_io_rsl)	
+  );
   ALU Alu (	
     .io_rs1       (io_in_bits_rs1),
     .io_rs2       (io_in_bits_rs2),
@@ -998,9 +1011,10 @@ module EXU(
     .io_alu_b_sel (io_in_bits_alu_b_sel),
     .io_alu_sel   (io_in_bits_alu_sel),
     .io_pc        (io_in_bits_pc),
-    .io_rsl       (io_out_bits_alu_out)
+    .io_rsl       (_Alu_io_rsl)
   );
   assign io_out_valid = state;	
+  assign io_out_bits_alu_out = _Alu_io_rsl;	
   assign io_out_bits_data = io_in_bits_rs2;	
   assign io_out_bits_arsize = io_in_bits_arsize;	
   assign io_out_bits_awsize = io_in_bits_awsize;	
@@ -1108,18 +1122,19 @@ module ISU(
       automatic logic            _GEN_8 = state == 3'h5;	
       automatic logic            _GEN_9 =
         io_isu_axi_in_bits_rvalid & io_isu_axi_in_bits_rresp == 2'h0;	
-      automatic logic            _GEN_10;	
+      automatic logic            _GEN_10 = _GEN_8 & io_in_bits_is_load & _GEN_9;	
       automatic logic            _GEN_11;	
-      automatic logic            _GEN_12 =
+      automatic logic            _GEN_12;	
+      automatic logic            _GEN_13 =
         io_isu_axi_in_bits_bresp == 2'h0 & io_isu_axi_in_bits_bvalid;	
-      automatic logic            _GEN_13 = io_in_bits_isS_type & _GEN_12;	
-      automatic logic            _GEN_14;	
-      automatic logic [2:0]      _GEN_15 =
-        _GEN_8 & (io_in_bits_is_load ? _GEN_9 : ~io_in_bits_isS_type | _GEN_12)
+      automatic logic            _GEN_14 = io_in_bits_isS_type & _GEN_13;	
+      automatic logic            _GEN_15;	
+      automatic logic [2:0]      _GEN_16 =
+        _GEN_8 & (io_in_bits_is_load ? _GEN_9 : ~io_in_bits_isS_type | _GEN_13)
           ? 3'h0
           : state;	
-      automatic logic [7:0]      _GEN_16;	
-      automatic logic [7:0][2:0] _GEN_17;	
+      automatic logic [7:0]      _GEN_17;	
+      automatic logic [7:0][2:0] _GEN_18;	
       _GEN_1 = state == 3'h1;	
       _GEN_2 = state == 3'h2;	
       _GEN_3 = arvalid & io_isu_axi_in_bits_arready;	
@@ -1127,14 +1142,14 @@ module ISU(
       _GEN_5 = awvalid & io_isu_axi_in_bits_awready;	
       _GEN_6 = state == 3'h4;	
       _GEN_7 = wvalid & io_isu_axi_in_bits_wready;	
-      _GEN_10 = _GEN_1 | _GEN_2 | _GEN_4 | _GEN_6;	
-      _GEN_11 = _GEN | _GEN_10;	
-      _GEN_14 =
-        _GEN_10 | ~_GEN_8
+      _GEN_11 = _GEN_1 | _GEN_2 | _GEN_4 | _GEN_6;	
+      _GEN_12 = _GEN | _GEN_11;	
+      _GEN_15 =
+        _GEN_11 | ~_GEN_8
           ? valid
-          : io_in_bits_is_load ? ~_GEN_9 & valid : ~_GEN_13 & valid;	
-      store_finish <= ~_GEN_11 & _GEN_8 & ~io_in_bits_is_load & _GEN_13 | store_finish;	
-      load_finish <= ~_GEN_11 & _GEN_8 & io_in_bits_is_load & _GEN_9 | load_finish;	
+          : io_in_bits_is_load ? ~_GEN_9 & valid : ~_GEN_14 & valid;	
+      store_finish <= ~_GEN_12 & _GEN_8 & ~io_in_bits_is_load & _GEN_14 | store_finish;	
+      load_finish <= ~_GEN_12 & _GEN_10 | load_finish;	
       if (~_GEN) begin	
         if (_GEN_1) begin	
           arvalid <= io_isu_axi_out_ready & io_in_bits_is_load | arvalid;	
@@ -1152,27 +1167,31 @@ module ISU(
         else	
           wvalid <= ~(_GEN_6 & _GEN_7) & wvalid;	
       end
-      _GEN_16 =
-        {{_GEN_14},
-         {_GEN_14},
-         {_GEN_14},
+      _GEN_17 =
+        {{_GEN_15},
+         {_GEN_15},
+         {_GEN_15},
          {valid},
          {valid},
          {valid},
          {valid},
          {io_in_valid & _GEN_0 | valid}};	
-      valid <= _GEN_16[state];	
-      if (io_in_bits_load_unsign)	
+      valid <= _GEN_17[state];	
+      if (_GEN_12 | ~_GEN_10) begin	
+      end
+      else	
         dm_out <=
-          io_in_bits_arsize == 3'h0
-            ? {24'h0, io_isu_axi_in_bits_rdata[7:0]}
-            : io_in_bits_arsize == 3'h1
-                ? {16'h0, io_isu_axi_in_bits_rdata[15:0]}
-                : io_isu_axi_in_bits_rdata;	
-      _GEN_17 =
-        {{_GEN_15},
-         {_GEN_15},
-         {_GEN_15},
+          io_in_bits_load_unsign
+            ? (io_in_bits_arsize == 3'h0
+                 ? {24'h0, io_isu_axi_in_bits_rdata[7:0]}
+                 : io_in_bits_arsize == 3'h1
+                     ? {16'h0, io_isu_axi_in_bits_rdata[15:0]}
+                     : io_isu_axi_in_bits_rdata)
+            : io_isu_axi_in_bits_rdata;	
+      _GEN_18 =
+        {{_GEN_16},
+         {_GEN_16},
+         {_GEN_16},
          {_GEN_7 ? 3'h5 : state},
          {_GEN_5 ? 3'h4 : state},
          {_GEN_3 ? 3'h5 : state},
@@ -1180,7 +1199,7 @@ module ISU(
             ? (io_in_bits_is_load ? 3'h2 : io_in_bits_isS_type ? 3'h3 : state)
             : state},
          {io_in_valid ? {~_GEN_0, 2'h1} : state}};	
-      state <= _GEN_17[state];	
+      state <= _GEN_18[state];	
     end
   end 
   assign io_out_valid = state == 3'h5;	
@@ -1211,6 +1230,7 @@ module ISU(
   assign io_isu_axi_in_ready = valid;	
   assign io_isu_valid = valid;	
 endmodule
+
 
 module WBU(	
   input         clock,	
@@ -1262,6 +1282,9 @@ module WBU(
       state <= _GEN[state];	
     end
   end 
+  difftest diff_test (	
+    .start_difftest (~(state == 2'h0 | state == 2'h1) & state == 2'h2)	
+  );
   assign io_out_valid = io_wbu_valid_0;	
   assign io_out_bits_jump_jalr = io_in_bits_jump_jalr;	
   assign io_out_bits_jump_en = io_in_bits_jump_en;	
@@ -1310,6 +1333,7 @@ module PC(
   end 
   assign io_next_pc = pc;	
 endmodule
+
 
 module XBAR(	
   input         clock,	
@@ -1364,35 +1388,55 @@ module XBAR(
                 io_isu_valid	
 );
 
+  reg        Accept_Fault;	
   reg  [2:0] state;	
   wire       _io_isu_axi_out_valid_T = state == 3'h4;	
   wire       ifu_selected = state == 3'h1 | _io_isu_axi_out_valid_T & io_ifu_valid;	
   always @(posedge clock) begin	
-    if (reset)	
+    if (reset) begin	
+      Accept_Fault <= 1'h0;	
       state <= 3'h0;	
-    else if (state == 3'h0) begin	
-      if (io_ifu_valid)	
-        state <= 3'h1;	
-      else if (io_isu_valid)	
-        state <= 3'h2;	
     end
-    else if (state == 3'h1) begin	
-      if (io_ifu_axi_in_valid & io_ifu_axi_in_bits_arvalid)	
-        state <= 3'h3;	
+    else begin	
+      automatic logic _GEN = state == 3'h0;	
+      automatic logic _GEN_0;	
+      automatic logic _GEN_1;	
+      automatic logic _GEN_2;	
+      automatic logic _GEN_3;	
+      _GEN_0 = state == 3'h1;	
+      _GEN_1 = state == 3'h2;	
+      _GEN_2 = state == 3'h3;	
+      _GEN_3 = state == 3'h4;	
+      Accept_Fault <=
+        ~(_GEN | _GEN_0 | _GEN_1 | _GEN_2 | _GEN_3) & state == 3'h5 | Accept_Fault;	
+      if (_GEN) begin	
+        if (io_ifu_valid)	
+          state <= 3'h1;	
+        else if (io_isu_valid)	
+          state <= 3'h2;	
+      end
+      else if (_GEN_0) begin	
+        if (io_ifu_axi_in_valid & io_ifu_axi_in_bits_arvalid)	
+          state <= 3'h3;	
+      end
+      else if (_GEN_1) begin	
+        if (io_isu_axi_in_valid
+            & (io_isu_axi_in_bits_arvalid | io_isu_axi_in_bits_awvalid))	
+          state <= 3'h3;	
+      end
+      else if (_GEN_2) begin	
+        if (io_ifu_axi_out_ready | io_isu_axi_out_ready)	
+          state <= 3'h4;	
+      end
+      else if (_GEN_3
+               & (io_xbar_in_bits_rresp == 2'h0 & io_xbar_in_bits_rvalid
+                  | io_xbar_in_bits_bresp == 2'h0 & io_xbar_in_bits_bvalid))	
+        state <= 3'h0;	
     end
-    else if (state == 3'h2) begin	
-      if (io_isu_axi_in_valid & (io_isu_axi_in_bits_arvalid | io_isu_axi_in_bits_awvalid))	
-        state <= 3'h3;	
-    end
-    else if (state == 3'h3) begin	
-      if (io_ifu_axi_out_ready | io_isu_axi_out_ready)	
-        state <= 3'h4;	
-    end
-    else if (state == 3'h4
-             & (io_xbar_in_bits_rresp == 2'h0 & io_xbar_in_bits_rvalid
-                | io_xbar_in_bits_bresp == 2'h0 & io_xbar_in_bits_bvalid))	
-      state <= 3'h0;	
   end 
+  accept_fault accept_fault (	
+    .is_accept_fault (Accept_Fault)	
+  );
   assign io_ifu_axi_in_ready = ifu_selected;	
   assign io_ifu_axi_out_bits_arready = io_xbar_in_bits_arready;	
   assign io_ifu_axi_out_bits_rvalid = io_xbar_in_bits_rvalid;	
@@ -1836,7 +1880,7 @@ module ysyx_23060192(
   assign io_master_awid = 4'h0;	
   assign io_master_awlen = 8'h0;	
   assign io_master_awburst = 2'h0;	
-  assign io_master_wlast = 1'h0;	
+  assign io_master_wlast = 1'h1;	
   assign io_master_bready = 1'h1;	
   assign io_slave_arready = 1'h0;	
   assign io_slave_rvalid = 1'h0;	
@@ -1853,6 +1897,30 @@ endmodule
 
 
 
+module npc_pc(
+    input [31:0] pc
+);
+    import "DPI-C" function void npc_dpic_pc(input int now_pc);
+    
+    always @(*) begin
+        npc_dpic_pc(pc);
+    end
+
+endmodule
+
+
+module npc_inst(
+    input [31:0] inst
+);
+    import "DPI-C" function void npc_inst(input int now_inst);
+    
+    always @(*) begin
+        npc_inst(inst);
+    end
+
+endmodule
+
+
 module ebreak(
     input logic is_ebreak
 );
@@ -1863,4 +1931,40 @@ module ebreak(
     end
 
 endmodule
+
+
+module npc_alu_out(
+    input [31:0] alu_out
+);
+    import "DPI-C" function void npc_alu_out(input int now_alu_out);
+    
+    always @(*) begin
+        npc_alu_out(alu_out);
+    end
+
+endmodule
+
+
+module difftest(
+    input logic start_difftest
+);
+    import "DPI-C" function void npc_difftest(input bit flag);
+    
+    always @(*) begin
+        npc_difftest(start_difftest);
+    end
+endmodule
+
+
+module accept_fault(
+    input logic is_accept_fault
+);
+    import "DPI-C" function void npc_accept_fault(input bit flag);
+    
+    always @(*) begin
+        npc_accept_fault(is_accept_fault);
+    end
+    
+endmodule
+
 

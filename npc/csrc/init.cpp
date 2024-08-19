@@ -62,6 +62,6 @@ void init_npc(int argc, char *argv[]){
   // initialize_mem_with_ebreak();
   printf("init_npc done\n");
 
-  // init_difftest(diff_file, size);  //加载动态链接库
+  init_difftest(diff_file, size);  //加载动态链接库
 }
 
